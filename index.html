@@ -16,7 +16,8 @@
   --bg:#060A18;
   --text:#DDE8FF;
   --muted:#7A9BC4;
-  --border:rgba(255,255,255,0.08);
+  --border:rgba(255,255,255,0.10);
+  --glass:rgba(6,10,24,0.72);
 }
 
 html{scroll-behavior:smooth}
@@ -27,20 +28,18 @@ body{
   overflow-x:hidden;
 }
 
-/* ── Fixed 3D canvas ── */
+/* ── Fixed 3D canvas — always behind everything ── */
 #c{
   position:fixed;
   top:0;left:0;
   width:100%;height:100%;
   z-index:0;
   pointer-events:none;
-  opacity:0;
-  transition:opacity 1.2s ease;
 }
-#c.visible{opacity:1}
 
 /* ════════════════════════════════
    SECTION 1 — VIDEO HERO
+   z-index:2 so it fully covers the canvas
 ════════════════════════════════ */
 #s1{
   position:relative;
@@ -49,7 +48,7 @@ body{
   align-items:center;
   justify-content:center;
   overflow:hidden;
-  z-index:1;
+  z-index:2;
 }
 #hero-video{
   position:absolute;
@@ -66,7 +65,7 @@ body{
     to bottom,
     rgba(6,10,24,.55) 0%,
     rgba(6,10,24,.15) 45%,
-    rgba(6,10,24,.82) 100%
+    rgba(6,10,24,.88) 100%
   );
   z-index:1;
 }
@@ -78,78 +77,46 @@ body{
   padding:0 28px;
 }
 .badge-row{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-bottom:30px;
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;
 }
 .badge{
   background:rgba(0,200,150,.12);
   border:1px solid rgba(0,200,150,.38);
   color:var(--teal);
-  padding:6px 18px;
-  border-radius:100px;
-  font-size:12.5px;
-  font-weight:600;
-  letter-spacing:.06em;
-  text-transform:uppercase;
+  padding:6px 18px;border-radius:100px;
+  font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
 }
 .hero-title{
   font-size:clamp(44px,8vw,92px);
-  font-weight:900;
-  line-height:1.04;
-  letter-spacing:-.035em;
-  color:#fff;
-  margin-bottom:22px;
+  font-weight:900;line-height:1.04;letter-spacing:-.035em;
+  color:#fff;margin-bottom:22px;
 }
 .hero-title .grad{
   background:linear-gradient(120deg,var(--teal) 0%,#4AF0C8 40%,var(--blue) 100%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .hero-sub{
   font-size:clamp(16px,2.3vw,21px);
   color:rgba(221,232,255,.82);
-  max-width:600px;
-  margin:0 auto 38px;
-  line-height:1.65;
+  max-width:600px;margin:0 auto 38px;line-height:1.65;
 }
 .btn-primary{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
+  display:inline-flex;align-items:center;gap:10px;
   background:linear-gradient(130deg,var(--teal),#00B8D4);
-  color:#fff;
-  padding:16px 38px;
-  border-radius:100px;
-  font-size:16px;
-  font-weight:700;
-  text-decoration:none;
-  letter-spacing:.01em;
+  color:#fff;padding:16px 38px;border-radius:100px;
+  font-size:16px;font-weight:700;text-decoration:none;letter-spacing:.01em;
   transition:transform .22s,box-shadow .22s;
   box-shadow:0 0 50px rgba(0,200,150,.38);
 }
 .btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 60px rgba(0,200,150,.55)}
 .scroll-cue{
-  position:absolute;
-  bottom:30px;left:50%;
-  transform:translateX(-50%);
-  z-index:2;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-  color:rgba(255,255,255,.38);
-  font-size:11px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:rgba(255,255,255,.38);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
   animation:bob 2.2s ease-in-out infinite;
 }
 .scroll-cue::after{
-  content:'';
-  width:1px;height:38px;
+  content:'';width:1px;height:38px;
   background:linear-gradient(to bottom,rgba(0,200,150,.55),transparent);
 }
 @keyframes bob{
@@ -158,133 +125,104 @@ body{
 }
 
 /* ════════════════════════════════
-   SECTIONS 2–4 SHARED
+   SECTIONS 2–4
+   z-index:1, NO background — canvas shows through
 ════════════════════════════════ */
-.sect{position:relative;z-index:1}
+.sect{
+  position:relative;
+  z-index:1;
+  background:transparent;
+}
 
+/* Sticky viewport panel */
 .sticky-wrap{
   position:sticky;
   top:0;
   height:100vh;
   display:flex;
   align-items:center;
-  overflow:hidden;
+  background:transparent;
+}
+
+/* Glassmorphism content panel — text readable over 3D */
+.glass-panel{
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:44px 40px;
+  pointer-events:all;
 }
 
 /* ════════════════════════════════
    SECTION 2 — BLIND SPOTS
 ════════════════════════════════ */
-#s2{min-height:250vh}
+#s2{min-height:260vh}
 
-.s2-inner{
-  padding:0 6vw;
-  max-width:600px;
-  pointer-events:all;
+.s2-wrap{
+  padding:0 5vw;
+  max-width:580px;
 }
-
 .eyebrow{
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--teal);
-  margin-bottom:18px;
+  font-size:12px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:18px;
 }
 .sect-h2{
-  font-size:clamp(30px,4.5vw,54px);
-  font-weight:800;
-  line-height:1.1;
-  letter-spacing:-.025em;
-  margin-bottom:18px;
+  font-size:clamp(28px,4vw,50px);
+  font-weight:800;line-height:1.1;letter-spacing:-.025em;margin-bottom:16px;
 }
 .sect-h2 .grad{
   background:linear-gradient(120deg,var(--teal),var(--blue));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .sect-body{
-  font-size:16.5px;
-  color:var(--muted);
-  line-height:1.72;
-  margin-bottom:26px;
+  font-size:16px;color:var(--muted);line-height:1.72;margin-bottom:24px;
 }
 .cond-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:28px;
+  display:flex;flex-wrap:wrap;gap:7px;margin-bottom:26px;
 }
 .cond-tag{
-  background:rgba(74,139,255,.09);
-  border:1px solid rgba(74,139,255,.22);
-  color:rgba(221,232,255,.78);
-  padding:5px 13px;
-  border-radius:6px;
-  font-size:13px;
-  font-weight:500;
-  transition:background .25s,border-color .25s;
+  background:rgba(74,139,255,.10);border:1px solid rgba(74,139,255,.24);
+  color:rgba(221,232,255,.80);padding:5px 12px;border-radius:6px;
+  font-size:12.5px;font-weight:500;
+  transition:background .2s,border-color .2s;
 }
-.cond-tag:hover{background:rgba(74,139,255,.18);border-color:rgba(74,139,255,.4)}
-.check-list{
-  list-style:none;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.check-list li{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-size:15.5px;
-  font-weight:500;
-}
+.cond-tag:hover{background:rgba(74,139,255,.20);border-color:rgba(74,139,255,.45)}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:11px}
+.check-list li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500}
 .check-icon{
-  width:24px;height:24px;
-  background:rgba(0,200,150,.12);
-  border:1px solid rgba(0,200,150,.35);
-  border-radius:50%;
+  width:23px;height:23px;background:rgba(0,200,150,.12);
+  border:1px solid rgba(0,200,150,.35);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  color:var(--teal);
-  font-size:12px;
+  flex-shrink:0;color:var(--teal);font-size:11px;
 }
 
-/* Text dissolve on scroll */
+/* dissolve on scroll */
 .diss{transition:opacity .85s ease,transform .85s ease,filter .85s ease}
-.diss.gone{opacity:0;transform:scale(1.04) translateY(-10px);filter:blur(5px);pointer-events:none}
+.diss.gone{opacity:0;transform:scale(1.05) translateY(-12px);filter:blur(6px);pointer-events:none}
 
 /* ════════════════════════════════
    SECTION 3 — LONGEVITY SYSTEM
 ════════════════════════════════ */
-#s3{min-height:230vh}
+#s3{min-height:240vh}
 
-.s3-inner{
-  padding:0 6vw;
-  margin-left:auto;
-  max-width:540px;
-  pointer-events:all;
+.s3-wrap{
+  padding: 50px;
+  max-width:520px;
+  margin-left: auto;
+  margin-right: 50px;
 }
-.pillar-list{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  margin-top:28px;
-}
+.pillar-list{display:flex;flex-direction:column;gap:13px;margin-top:26px}
 .pillar{
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:20px 22px;
-  transition:border-color .3s,background .3s;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:14px;padding:18px 20px;transition:border-color .3s,background .3s;
 }
-.pillar:hover{background:rgba(255,255,255,.07);border-color:rgba(0,200,150,.25)}
-.pillar-head{
-  display:flex;align-items:center;gap:12px;margin-bottom:8px;
-}
-.pillar-icon{font-size:20px;line-height:1}
-.pillar-title{font-size:15.5px;font-weight:700;color:var(--text)}
-.pillar-detail{font-size:13.5px;color:var(--muted);line-height:1.55;padding-left:32px}
+.pillar:hover{background:rgba(255,255,255,.09);border-color:rgba(0,200,150,.28)}
+.pillar-head{display:flex;align-items:center;gap:12px;margin-bottom:7px}
+.pillar-icon{font-size:19px;line-height:1}
+.pillar-title{font-size:15px;font-weight:700;color:var(--text)}
+.pillar-detail{font-size:13px;color:var(--muted);line-height:1.55;padding-left:31px}
 
 /* ════════════════════════════════
    SECTION 4 — CTA
@@ -292,46 +230,27 @@ body{
 #s4{min-height:160vh}
 
 .s4-inner{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  padding:0 28px;
-  pointer-events:all;
+  width:100%;display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:0 28px;pointer-events:all;
+  max-width:700px;margin:0 auto;
 }
 .s4-title{
-  font-size:clamp(36px,6vw,72px);
-  font-weight:900;
-  line-height:1.07;
-  letter-spacing:-.03em;
-  margin-bottom:22px;
+  font-size:clamp(36px,6vw,70px);font-weight:900;
+  line-height:1.07;letter-spacing:-.03em;margin-bottom:20px;
 }
 .s4-title .grad{
   background:linear-gradient(120deg,var(--teal),var(--blue));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .s4-body{
-  font-size:18px;
-  color:var(--muted);
-  line-height:1.7;
-  max-width:540px;
-  margin-bottom:40px;
+  font-size:18px;color:var(--muted);line-height:1.7;
+  max-width:520px;margin-bottom:38px;
 }
 .btn-xl{
-  display:inline-flex;
-  align-items:center;
-  gap:12px;
+  display:inline-flex;align-items:center;gap:12px;
   background:linear-gradient(130deg,var(--teal),#00B8D4);
-  color:#fff;
-  padding:20px 52px;
-  border-radius:100px;
-  font-size:18px;
-  font-weight:700;
-  text-decoration:none;
-  letter-spacing:.01em;
+  color:#fff;padding:19px 50px;border-radius:100px;
+  font-size:18px;font-weight:700;text-decoration:none;letter-spacing:.01em;
   transition:transform .22s,box-shadow .22s;
   box-shadow:0 0 70px rgba(0,200,150,.42);
 }
@@ -341,38 +260,35 @@ body{
    FOOTER
 ════════════════════════════════ */
 footer{
-  position:relative;
-  z-index:1;
-  text-align:center;
-  padding:36px 24px;
+  position:relative;z-index:2;
+  text-align:center;padding:36px 24px;
   border-top:1px solid var(--border);
-  color:var(--muted);
-  font-size:13.5px;
-  background:rgba(6,10,24,.97);
+  color:var(--muted);font-size:13.5px;
+  background:var(--bg);
 }
 
 /* ════════════════════════════════
-   REVEAL ANIMATIONS
+   REVEAL
 ════════════════════════════════ */
-.rv{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .rv.in{opacity:1;transform:none}
-.rv.d1{transition-delay:.1s}
+.rv.d1{transition-delay:.10s}
 .rv.d2{transition-delay:.22s}
-.rv.d3{transition-delay:.35s}
-.rv.d4{transition-delay:.48s}
+.rv.d3{transition-delay:.34s}
+.rv.d4{transition-delay:.46s}
 </style>
 </head>
 <body>
 
+<!-- Fixed 3D canvas — always behind everything -->
 <canvas id="c"></canvas>
 
-<!-- ══════════ SECTION 1: VIDEO HERO ══════════ -->
+<!-- ══════════ S1: VIDEO HERO (z-index:2, covers canvas) ══════════ -->
 <section id="s1">
   <video id="hero-video" autoplay muted loop playsinline>
     <source src="videos/getpeakvideo.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
-
   <div class="hero-content">
     <div class="badge-row">
       <span class="badge rv in">Elite Longevity Doctors</span>
@@ -382,39 +298,36 @@ footer{
       Add <span class="grad">Better Years</span><br>to Your Life
     </h1>
     <p class="hero-sub rv in d3">
-      Doctor-led longevity care designed to help you live healthier,
-      longer. Join the waitlist for your free longevity consult.
+      Doctor-led longevity care designed to help you live healthier, longer.
+      Join the waitlist for your free longevity consult.
     </p>
     <a href="https://getpeakhealth.typeform.com/longevity"
        class="btn-primary rv in d4" target="_blank" rel="noopener">
       Start Free Consult
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2.5"
-           stroke-linecap="round" stroke-linejoin="round">
-        <line x1="5" y1="12" x2="19" y2="12"/>
-        <polyline points="12 5 19 12 12 19"/>
+           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
       </svg>
     </a>
   </div>
-
   <div class="scroll-cue">Scroll</div>
 </section>
 
-<!-- ══════════ SECTION 2: BLIND SPOTS ══════════ -->
+<!-- ══════════ S2: BLIND SPOTS (z-index:1, transparent — canvas shows) ══════════ -->
 <section id="s2" class="sect">
   <div class="sticky-wrap">
-    <div class="s2-inner">
-      <p class="eyebrow rv diss">Precision Diagnostics</p>
-      <h2 class="sect-h2 rv d1 diss">
+    <div class="s2-wrap">
+      <p class="eyebrow diss rv">Precision Diagnostics</p>
+      <h2 class="sect-h2 diss rv d1">
         Turn Your Biological<br>
         <span class="grad">Blind Spots</span><br>
         into Breakthroughs
       </h2>
-      <p class="sect-body rv d2 diss">
+      <p class="sect-body diss rv d2">
         Most people walk around with preventable conditions going undetected.
         We identify and address the root causes — before they become problems.
       </p>
-      <div class="cond-grid rv d3 diss">
+      <div class="cond-grid diss rv d3">
         <span class="cond-tag">Brain Fog</span>
         <span class="cond-tag">Insulin Resistance</span>
         <span class="cond-tag">Low Libido</span>
@@ -430,7 +343,7 @@ footer{
         <span class="cond-tag">Inflammation</span>
         <span class="cond-tag">Thyroid</span>
       </div>
-      <ul class="check-list rv d4 diss">
+      <ul class="check-list diss rv d4">
         <li><span class="check-icon">✓</span>Continuous Monitoring</li>
         <li><span class="check-icon">✓</span>Doctor-Led Protocols</li>
       </ul>
@@ -438,14 +351,13 @@ footer{
   </div>
 </section>
 
-<!-- ══════════ SECTION 3: LONGEVITY SYSTEM ══════════ -->
+<!-- ══════════ S3: LONGEVITY SYSTEM (z-index:1, transparent) ══════════ -->
 <section id="s3" class="sect">
   <div class="sticky-wrap" style="justify-content:flex-end">
-    <div class="s3-inner">
+    <div class="s3-wrap glass-panel">
       <p class="eyebrow rv">The System</p>
       <h2 class="sect-h2 rv d1">
-        The Peak Health<br>
-        <span class="grad">Longevity System</span>
+        The Peak Health<br><span class="grad">Longevity System</span>
       </h2>
       <div class="pillar-list">
         <div class="pillar rv d2">
@@ -453,37 +365,28 @@ footer{
             <span class="pillar-icon">🔬</span>
             <span class="pillar-title">Advanced Testing &amp; Diagnostics</span>
           </div>
-          <p class="pillar-detail">
-            350+ biomarkers · 200+ labs · 2× a year<br>
-            Body scans and performance testing
-          </p>
+          <p class="pillar-detail">350+ biomarkers · 200+ labs · 2× a year<br>Body scans and performance testing</p>
         </div>
         <div class="pillar rv d3">
           <div class="pillar-head">
             <span class="pillar-icon">👨‍⚕️</span>
             <span class="pillar-title">Access to Elite Longevity Doctors</span>
           </div>
-          <p class="pillar-detail">
-            Trained in precision longevity care<br>
-            Delivered through telemedicine
-          </p>
+          <p class="pillar-detail">Trained in precision longevity care<br>Delivered through telemedicine</p>
         </div>
         <div class="pillar rv d4">
           <div class="pillar-head">
             <span class="pillar-icon">📋</span>
             <span class="pillar-title">A Personalized Longevity Plan</span>
           </div>
-          <p class="pillar-detail">
-            Prescriptions: Peptides, Hormones, GLP-1s<br>
-            Supplements, nutrition, and fitness plans
-          </p>
+          <p class="pillar-detail">Prescriptions: Peptides, Hormones, GLP-1s<br>Supplements, nutrition, and fitness plans</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════ SECTION 4: CTA ══════════ -->
+<!-- ══════════ S4: CTA (z-index:1, transparent) ══════════ -->
 <section id="s4" class="sect">
   <div class="sticky-wrap" style="justify-content:center">
     <div class="s4-inner">
@@ -499,10 +402,8 @@ footer{
          class="btn-xl rv d3" target="_blank" rel="noopener">
         Get Peak Health
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.5"
-             stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-          <polyline points="12 5 19 12 12 19"/>
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
         </svg>
       </a>
     </div>
@@ -513,348 +414,314 @@ footer{
   <p>© 2025 Get Peak Health · All rights reserved.</p>
 </footer>
 
-<!-- Three.js r128 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
 'use strict';
 
 /* ─── Math helpers ─── */
-const lerp  = (a,b,t) => a+(b-a)*t;
-const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
-const ci01  = (lo,hi,v) => clamp((v-lo)/(hi-lo),0,1);
-function eio(t){ return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 }
+const lerp  = (a,b,t)=>a+(b-a)*t;
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+const ci01  = (lo,hi,v)=>clamp((v-lo)/(hi-lo),0,1);
+function eio(t){return t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1}
 
-/* ─── Renderer + Scene ─── */
+/* ─── Renderer ─── */
 const cvs      = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setSize(innerWidth,innerHeight);
+renderer.setClearColor(0x000000,0); // fully transparent clear
 
 const scene  = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,200);
-camera.position.set(0,0,15);
+camera.position.set(0,0,14);
 
-/* ─── Glow sprite texture ─── */
-const gc = document.createElement('canvas');
-gc.width = gc.height = 64;
-const gtx = gc.getContext('2d');
-const grd = gtx.createRadialGradient(32,32,0,32,32,32);
-grd.addColorStop(0,   'rgba(255,255,255,1)');
-grd.addColorStop(.35, 'rgba(255,255,255,.65)');
-grd.addColorStop(1,   'rgba(255,255,255,0)');
-gtx.fillStyle=grd; gtx.fillRect(0,0,64,64);
-const ptex = new THREE.CanvasTexture(gc);
+/* ─── Glow sprite ─── */
+const gc=document.createElement('canvas');
+gc.width=gc.height=64;
+const gx=gc.getContext('2d');
+const grd=gx.createRadialGradient(32,32,0,32,32,32);
+grd.addColorStop(0,'rgba(255,255,255,1)');
+grd.addColorStop(.3,'rgba(255,255,255,.8)');
+grd.addColorStop(.6,'rgba(255,255,255,.3)');
+grd.addColorStop(1,'rgba(255,255,255,0)');
+gx.fillStyle=grd;gx.fillRect(0,0,64,64);
+const ptex=new THREE.CanvasTexture(gc);
 
-/* ─── Particle system ─── */
-const N = 1100;
+/* ─── Particles ─── */
+const N=1400;
+const posA=new Float32Array(N*3); // DNA
+const posB=new Float32Array(N*3); // Burst
+const posC=new Float32Array(N*3); // Sphere
+const posF=new Float32Array(N*3); // Neural
+const cur  =new Float32Array(N*3);
+const curc =new Float32Array(N*3);
+const orbY =new Float32Array(N);
+const nFreq=new Float32Array(N);
+const nPh  =new Float32Array(N);
+const nAmp =new Float32Array(N);
+const nDir =new Float32Array(N*3);
 
-const posA = new Float32Array(N*3); // DNA helix
-const posB = new Float32Array(N*3); // Burst
-const posC = new Float32Array(N*3); // Fibonacci sphere
-const posF = new Float32Array(N*3); // Neural hubs
-
-const cur  = new Float32Array(N*3); // live positions
-const curc = new Float32Array(N*3); // live colors
-
-const orbY  = new Float32Array(N);
-const nFreq = new Float32Array(N);
-const nPhase= new Float32Array(N);
-const nAmp  = new Float32Array(N);
-const nDir  = new Float32Array(N*3);
-
-/* DNA double helix */
+/* DNA double helix — base angles stored so we can spin it live */
+const dnaBase=new Float32Array(N);
 for(let i=0;i<N;i++){
-  const t  = (i/N)*Math.PI*16;
-  const ph = (i%2)*Math.PI;
-  const r  = 2.6;
-  posA[i*3]   = Math.cos(t+ph)*r;
-  posA[i*3+1] = (i/N)*22-11;
-  posA[i*3+2] = Math.sin(t+ph)*r;
+  dnaBase[i]=(i/N)*Math.PI*18+(i%2)*Math.PI;
+  posA[i*3]  =Math.cos(dnaBase[i])*2.8;
+  posA[i*3+1]=(i/N)*17-8.5;
+  posA[i*3+2]=Math.sin(dnaBase[i])*2.8;
 }
 
-/* Explosion burst */
+/* Burst scatter */
 for(let i=0;i<N;i++){
-  const th = Math.acos(2*Math.random()-1);
-  const ph = Math.random()*Math.PI*2;
-  const r  = 9+Math.random()*9;
-  posB[i*3]   = r*Math.sin(th)*Math.cos(ph);
-  posB[i*3+1] = r*Math.sin(th)*Math.sin(ph);
-  posB[i*3+2] = r*Math.cos(th);
+  const th=Math.acos(2*Math.random()-1);
+  const ph=Math.random()*Math.PI*2;
+  const r =9+Math.random()*8;
+  posB[i*3]  =r*Math.sin(th)*Math.cos(ph);
+  posB[i*3+1]=r*Math.sin(th)*Math.sin(ph);
+  posB[i*3+2]=r*Math.cos(th);
 }
 
 /* Fibonacci sphere */
 for(let i=0;i<N;i++){
-  const th  = Math.acos(1-2*(i+.5)/N);
-  const phi = Math.PI*(1+Math.sqrt(5))*i;
-  const r   = 6.8;
-  posC[i*3]   = r*Math.sin(th)*Math.cos(phi);
-  posC[i*3+1] = r*Math.sin(th)*Math.sin(phi);
-  posC[i*3+2] = r*Math.cos(th);
-  orbY[i]     = (Math.random()-.5)*.5;
+  const th =Math.acos(1-2*(i+.5)/N);
+  const phi=Math.PI*(1+Math.sqrt(5))*i;
+  const r  =7;
+  posC[i*3]  =r*Math.sin(th)*Math.cos(phi);
+  posC[i*3+1]=r*Math.sin(th)*Math.sin(phi);
+  posC[i*3+2]=r*Math.cos(th);
+  orbY[i]    =(Math.random()-.5)*.5;
 }
 
-/* Neural hub clusters */
-const HUB=[[3,1.5,0],[-3,-1.5,1],[0,3,-2],[-1.5,1,3.5],[2.5,-3,.5],[0,-1,-3.5]];
+/* Neural hubs */
+const HUB=[[3.5,2,0],[-3.5,-2,1],[0,3.5,-2],[-2,1.5,3.5],[3,-3.5,.5],[0,-1.5,-3.5]];
 for(let i=0;i<N;i++){
-  const h   = HUB[i%HUB.length];
-  const spr = i<N*.18 ? 4+Math.random()*3.5 : 1.5+Math.random()*2;
-  posF[i*3]   = h[0]+(Math.random()-.5)*spr;
-  posF[i*3+1] = h[1]+(Math.random()-.5)*spr;
-  posF[i*3+2] = h[2]+(Math.random()-.5)*spr;
-  nFreq[i]  = .7+Math.random()*2.8;
-  nPhase[i] = Math.random()*Math.PI*2;
-  nAmp[i]   = i<N*.18 ? 3+Math.random()*4 : .25+Math.random()*.7;
+  const h  =HUB[i%HUB.length];
+  const spr=i<N*.18?4.5+Math.random()*3:1.5+Math.random()*2;
+  posF[i*3]  =h[0]+(Math.random()-.5)*spr;
+  posF[i*3+1]=h[1]+(Math.random()-.5)*spr;
+  posF[i*3+2]=h[2]+(Math.random()-.5)*spr;
+  nFreq[i]=.7+Math.random()*2.8;
+  nPh[i]  =Math.random()*Math.PI*2;
+  nAmp[i] =i<N*.18?3+Math.random()*4:.25+Math.random()*.7;
   let dx=Math.random()-.5,dy=Math.random()-.5,dz=Math.random()-.5;
   const dl=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
-  nDir[i*3]=dx/dl; nDir[i*3+1]=dy/dl; nDir[i*3+2]=dz/dl;
+  nDir[i*3]=dx/dl;nDir[i*3+1]=dy/dl;nDir[i*3+2]=dz/dl;
 }
 
-/* Neural connection pairs */
-const NPAIRS=[];
-{
-  const LIM=4.8, LIM2=LIM*LIM, MAX=320;
-  for(let i=0;i<N&&NPAIRS.length<MAX*2;i++){
-    for(let j=i+1;j<N&&NPAIRS.length<MAX*2;j++){
-      const dx=posF[i*3]-posF[j*3],
-            dy=posF[i*3+1]-posF[j*3+1],
-            dz=posF[i*3+2]-posF[j*3+2];
-      if(dx*dx+dy*dy+dz*dz<LIM2) NPAIRS.push(i,j);
-    }
-  }
-}
+/* Neural pairs */
+const NP=[];
+{const LIM2=4.8*4.8;for(let i=0;i<N&&NP.length<640;i++)for(let j=i+1;j<N&&NP.length<640;j++){
+  const dx=posF[i*3]-posF[j*3],dy=posF[i*3+1]-posF[j*3+1],dz=posF[i*3+2]-posF[j*3+2];
+  if(dx*dx+dy*dy+dz*dz<LIM2)NP.push(i,j);
+}}
 
 /* Sphere colors */
-const colSph=new Float32Array(N*3);
+const cSph=new Float32Array(N*3);
 for(let i=0;i<N;i++){
-  colSph[i*3]  =.08+Math.random()*.38;
-  colSph[i*3+1]=.48+Math.random()*.52;
-  colSph[i*3+2]=.82+Math.random()*.18;
+  cSph[i*3]  =.08+Math.random()*.35;
+  cSph[i*3+1]=.50+Math.random()*.50;
+  cSph[i*3+2]=.80+Math.random()*.20;
 }
 
-/* Orbital ring colors */
-const colOrb=new Float32Array(N*3);
-{
-  const np=Math.floor(N/3);
-  for(let i=0;i<N;i++){
-    if(i<np)      {colOrb[i*3]=0;   colOrb[i*3+1]=.88;colOrb[i*3+2]=.62;}
-    else if(i<np*2){colOrb[i*3]=.22;colOrb[i*3+1]=.55;colOrb[i*3+2]=1;}
-    else           {colOrb[i*3]=.62;colOrb[i*3+1]=.3; colOrb[i*3+2]=1;}
-  }
-}
+/* Orbital colors */
+const cOrb=new Float32Array(N*3);
+{const np=Math.floor(N/3);
+for(let i=0;i<N;i++){
+  if(i<np)     {cOrb[i*3]=0;   cOrb[i*3+1]=.92;cOrb[i*3+2]=.65;}
+  else if(i<np*2){cOrb[i*3]=.22;cOrb[i*3+1]=.55;cOrb[i*3+2]=1;}
+  else          {cOrb[i*3]=.65;cOrb[i*3+1]=.3; cOrb[i*3+2]=1;}
+}}
 
-/* Three.js geometry */
+/* Three.js geometry — position + color only (no custom size attr) */
 const geo=new THREE.BufferGeometry();
 geo.setAttribute('position',new THREE.BufferAttribute(cur, 3).setUsage(THREE.DynamicDrawUsage));
 geo.setAttribute('color',   new THREE.BufferAttribute(curc,3).setUsage(THREE.DynamicDrawUsage));
-geo.setAttribute('size',    new THREE.BufferAttribute(new Float32Array(N).fill(16),1));
 
-const pMat=new THREE.ShaderMaterial({
-  uniforms:{uTex:{value:ptex}},
-  vertexShader:`
-    attribute float size;
-    attribute vec3  color;
-    varying   vec3  vCol;
-    void main(){
-      vCol=color;
-      vec4 mv=modelViewMatrix*vec4(position,1.);
-      gl_PointSize=size*(580./-mv.z);
-      gl_Position=projectionMatrix*mv;
-    }
-  `,
-  fragmentShader:`
-    uniform sampler2D uTex;
-    varying vec3 vCol;
-    void main(){
-      float a=texture2D(uTex,gl_PointCoord).r;
-      if(a<.04)discard;
-      gl_FragColor=vec4(vCol,a);
-    }
-  `,
+/* PointsMaterial: size in world units → no WebGL gl_PointSize limit issues */
+const pMat=new THREE.PointsMaterial({
+  size:0.55,
+  sizeAttenuation:true,
+  map:ptex,
+  vertexColors:true,
   transparent:true,
   blending:THREE.AdditiveBlending,
   depthWrite:false,
-  vertexColors:true,
+  alphaTest:0.015,
 });
 const pts=new THREE.Points(geo,pMat);
 scene.add(pts);
 
-/* Neural line segments */
-const linePos=new Float32Array((NPAIRS.length/2)*6);
-const lineGeo=new THREE.BufferGeometry();
-lineGeo.setAttribute('position',new THREE.BufferAttribute(linePos,3).setUsage(THREE.DynamicDrawUsage));
-const lineMat=new THREE.LineBasicMaterial({
-  color:0x4A8BFF,transparent:true,opacity:.10,
-  blending:THREE.AdditiveBlending,depthWrite:false
-});
-const lines=new THREE.LineSegments(lineGeo,lineMat);
-scene.add(lines);
-lines.visible=false;
+/* Neural lines */
+const lPos=new Float32Array((NP.length/2)*6);
+const lGeo=new THREE.BufferGeometry();
+lGeo.setAttribute('position',new THREE.BufferAttribute(lPos,3).setUsage(THREE.DynamicDrawUsage));
+const lMat=new THREE.LineBasicMaterial({color:0x4A8BFF,transparent:true,opacity:.12,blending:THREE.AdditiveBlending,depthWrite:false});
+const lines=new THREE.LineSegments(lGeo,lMat);
+scene.add(lines);lines.visible=false;
 
 /* Orbital position helper */
 function orbPos(i,t,out,b){
   const np=Math.floor(N/3);
   if(i<np){
     const a=(i/np)*Math.PI*2+t*.72;
-    out[b]=Math.cos(a)*6.5; out[b+1]=orbY[i]; out[b+2]=Math.sin(a)*6.5;
-  } else if(i<np*2){
+    out[b]=Math.cos(a)*6.5;out[b+1]=orbY[i];out[b+2]=Math.sin(a)*6.5;
+  }else if(i<np*2){
     const j=i-np,a=(j/np)*Math.PI*2-t*.56,r=5.0,tl=Math.PI*.3;
-    out[b]=Math.cos(a)*r; out[b+1]=Math.sin(a)*Math.sin(tl)*r; out[b+2]=Math.sin(a)*Math.cos(tl)*r;
-  } else {
+    out[b]=Math.cos(a)*r;out[b+1]=Math.sin(a)*Math.sin(tl)*r;out[b+2]=Math.sin(a)*Math.cos(tl)*r;
+  }else{
     const np3=N-np*2,j=i-np*2,a=(j/np3)*Math.PI*2+t*1.08,r=3.8,tl=-Math.PI*.3;
-    out[b]=Math.cos(a)*r; out[b+1]=Math.sin(a)*Math.sin(tl)*r; out[b+2]=Math.sin(a)*Math.cos(tl)*r;
+    out[b]=Math.cos(a)*r;out[b+1]=Math.sin(a)*Math.sin(tl)*r;out[b+2]=Math.sin(a)*Math.cos(tl)*r;
   }
 }
 
 /* ─── State ─── */
-let sRaw=0, sSmooth=0, T=0, orbStartT=-1, mxl=0, myl=0;
-const s1El=document.getElementById('s1');
+let sRaw=0,sSm=0,T=0,orbST=-1,mxl=0,myl=0;
+const s1=document.getElementById('s1');
 
 function getS(){
-  const s1H =s1El.offsetHeight;
-  const maxS=document.documentElement.scrollHeight-innerHeight;
-  const tot =maxS-s1H;
-  return tot>0 ? clamp((scrollY-s1H)/tot,0,1) : 0;
+  const h1=s1.offsetHeight;
+  const tot=document.documentElement.scrollHeight-innerHeight-h1;
+  return tot>0?clamp((scrollY-h1)/tot,0,1):0;
 }
 
-/* Canvas visibility — hide during hero, show when entering section 2 */
-function syncCanvas(){
-  cvs.classList.toggle('visible', scrollY > s1El.offsetHeight*.65);
-}
-
-/* Section 2 text dissolve */
+/* Dissolve section 2 text into particles */
 const dissEls=document.querySelectorAll('#s2 .diss');
-let dissolved=false;
-function syncDissolve(s){
-  if(s>.09&&!dissolved){ dissolved=true;  dissEls.forEach(e=>e.classList.add('gone')); }
-  if(s<.05&& dissolved){ dissolved=false; dissEls.forEach(e=>e.classList.remove('gone')); }
+let diss=false;
+function syncDiss(s){
+  if(s>.09&&!diss){diss=true; dissEls.forEach(e=>e.classList.add('gone'));}
+  if(s<.04&& diss){diss=false;dissEls.forEach(e=>e.classList.remove('gone'));}
 }
 
-/* Per-frame orbital live scratch buffer */
-const orbLive=new Float32Array(3);
+const oLive=new Float32Array(3);
 
-/* ─── Main loop ─── */
+/* ─── Tick ─── */
 function tick(){
   requestAnimationFrame(tick);
   T+=.016;
-  sSmooth=lerp(sSmooth,sRaw,.072);
-  const s=sSmooth;
+  sSm=lerp(sSm,sRaw,.075);
+  const s=sSm;
 
-  syncDissolve(s);
+  syncDiss(s);
 
-  /* Phase transitions */
-  const pEx   =eio(ci01(.08,.28,s));   // DNA → Explosion
-  const pSp   =eio(ci01(.28,.50,s));   // Explosion → Sphere
-  const pOrb  =eio(ci01(.52,.68,s));   // Sphere → Orbital
-  const pNeu  =eio(ci01(.78,.90,s));   // Orbital → Neural
-  const pNeuF =ci01(.90,1.0,s);        // Full neural
+  /* Phase progress — s maps sections 2-4 to [0,1] */
+  const pEx  =eio(ci01(.06,.26,s));   // DNA → Explosion
+  const pSp  =eio(ci01(.26,.48,s));   // Explosion → Sphere
+  const pOrb =eio(ci01(.50,.66,s));   // Sphere → Orbital
+  const pNeu =eio(ci01(.76,.88,s));   // Orbital → Neural
+  const pNeuF=ci01(.88,1.0,s);        // Full neural
 
-  /* Orbital clock – reset when phase starts */
-  if(s>.52&&orbStartT<0) orbStartT=T;
-  if(s<.48)              orbStartT=-1;
-  const orbT=orbStartT>=0 ? T-orbStartT : 0;
+  if(s>.50&&orbST<0)orbST=T;
+  if(s<.46)orbST=-1;
+  const orbT=orbST>=0?T-orbST:0;
 
   lines.visible  =pNeu>.05;
-  lineMat.opacity=.07+pNeuF*.22;
+  lMat.opacity   =.08+pNeuF*.22;
 
-  /* ── Per-particle update ── */
+  /* Live-spin the DNA helix so it's clearly 3D */
+  if(pEx<.99){
+    const spin=T*.35;
+    for(let i=0;i<N;i++){
+      const a=dnaBase[i]+spin;
+      posA[i*3]  =Math.cos(a)*2.8;
+      posA[i*3+2]=Math.sin(a)*2.8;
+    }
+  }
+
   for(let i=0;i<N;i++){
     const b=i*3;
-
-    /* Live orbital pos */
-    if(pOrb>0||pNeu>0) orbPos(i,orbT,orbLive,0);
+    if(pOrb>0||pNeu>0)orbPos(i,orbT,oLive,0);
 
     /* Position */
     let x,y,z;
     if(pNeu>0){
-      const fire=(Math.sin(T*nFreq[i]+nPhase[i])+1)*.5;
-      const disp=nAmp[i]*fire;
-      const toX=posF[b]  +nDir[b]  *disp;
-      const toY=posF[b+1]+nDir[b+1]*disp;
-      const toZ=posF[b+2]+nDir[b+2]*disp;
-      const fX=pOrb>.999?orbLive[0]:lerp(posC[b],  orbLive[0],pOrb);
-      const fY=pOrb>.999?orbLive[1]:lerp(posC[b+1],orbLive[1],pOrb);
-      const fZ=pOrb>.999?orbLive[2]:lerp(posC[b+2],orbLive[2],pOrb);
-      x=lerp(fX,toX,pNeu); y=lerp(fY,toY,pNeu); z=lerp(fZ,toZ,pNeu);
-    } else if(pOrb>0){
-      x=lerp(posC[b],  orbLive[0],pOrb);
-      y=lerp(posC[b+1],orbLive[1],pOrb);
-      z=lerp(posC[b+2],orbLive[2],pOrb);
-    } else if(pSp>0){
+      const fi=(Math.sin(T*nFreq[i]+nPh[i])+1)*.5;
+      const dp=nAmp[i]*fi;
+      const tx=posF[b]  +nDir[b]  *dp,ty=posF[b+1]+nDir[b+1]*dp,tz=posF[b+2]+nDir[b+2]*dp;
+      const fx=pOrb>.999?oLive[0]:lerp(posC[b],  oLive[0],pOrb);
+      const fy=pOrb>.999?oLive[1]:lerp(posC[b+1],oLive[1],pOrb);
+      const fz=pOrb>.999?oLive[2]:lerp(posC[b+2],oLive[2],pOrb);
+      x=lerp(fx,tx,pNeu);y=lerp(fy,ty,pNeu);z=lerp(fz,tz,pNeu);
+    }else if(pOrb>0){
+      x=lerp(posC[b],  oLive[0],pOrb);
+      y=lerp(posC[b+1],oLive[1],pOrb);
+      z=lerp(posC[b+2],oLive[2],pOrb);
+    }else if(pSp>0){
       x=lerp(posB[b],  posC[b],  pSp);
       y=lerp(posB[b+1],posC[b+1],pSp);
       z=lerp(posB[b+2],posC[b+2],pSp);
-    } else if(pEx>0){
+    }else if(pEx>0){
       x=lerp(posA[b],  posB[b],  pEx);
       y=lerp(posA[b+1],posB[b+1],pEx);
       z=lerp(posA[b+2],posB[b+2],pEx);
-    } else {
-      x=posA[b]; y=posA[b+1]; z=posA[b+2];
+    }else{
+      x=posA[b];y=posA[b+1];z=posA[b+2];
     }
-    cur[b]=x; cur[b+1]=y; cur[b+2]=z;
+    cur[b]=x;cur[b+1]=y;cur[b+2]=z;
 
     /* Color */
     let r,g,bl;
     if(pNeu>0){
-      const fire=(Math.sin(T*nFreq[i]+nPhase[i])+1)*.5;
-      const f2=fire*fire;
-      const nr=.05+f2*.58, ng=.20+f2*.65, nb=.82+f2*.18;
-      const fR=pOrb>.999?colOrb[b]  :lerp(colSph[b],  colOrb[b],  pOrb);
-      const fG=pOrb>.999?colOrb[b+1]:lerp(colSph[b+1],colOrb[b+1],pOrb);
-      const fB=pOrb>.999?colOrb[b+2]:lerp(colSph[b+2],colOrb[b+2],pOrb);
-      r=lerp(fR,nr,pNeu); g=lerp(fG,ng,pNeu); bl=lerp(fB,nb,pNeu);
-    } else if(pOrb>0){
-      r =lerp(colSph[b],  colOrb[b],  pOrb);
-      g =lerp(colSph[b+1],colOrb[b+1],pOrb);
-      bl=lerp(colSph[b+2],colOrb[b+2],pOrb);
-    } else {
-      const blend=Math.max(pSp,pEx*.35);
-      r =lerp(0,   colSph[b],  blend);
-      g =lerp(.82, colSph[b+1],blend);
-      bl=lerp(.60, colSph[b+2],blend);
+      const fi=(Math.sin(T*nFreq[i]+nPh[i])+1)*.5;
+      const f2=fi*fi;
+      const nr=.05+f2*.60,ng=.18+f2*.68,nb=.82+f2*.18;
+      const fr=pOrb>.999?cOrb[b]  :lerp(cSph[b],  cOrb[b],  pOrb);
+      const fg=pOrb>.999?cOrb[b+1]:lerp(cSph[b+1],cOrb[b+1],pOrb);
+      const fb=pOrb>.999?cOrb[b+2]:lerp(cSph[b+2],cOrb[b+2],pOrb);
+      r=lerp(fr,nr,pNeu);g=lerp(fg,ng,pNeu);bl=lerp(fb,nb,pNeu);
+    }else if(pOrb>0){
+      r =lerp(cSph[b],  cOrb[b],  pOrb);
+      g =lerp(cSph[b+1],cOrb[b+1],pOrb);
+      bl=lerp(cSph[b+2],cOrb[b+2],pOrb);
+    }else{
+      const blend=Math.max(pSp,pEx*.4);
+      // DNA: bright teal (strand 0) and bright blue (strand 1)
+      const strand=i%2;
+      const dr=strand==0?0:.25, dg=strand==0?.90:.55, db=strand==0?.65:1.0;
+      r =lerp(dr,cSph[b],  blend);
+      g =lerp(dg,cSph[b+1],blend);
+      bl=lerp(db,cSph[b+2],blend);
     }
-    curc[b]=r; curc[b+1]=g; curc[b+2]=bl;
+    curc[b]=r;curc[b+1]=g;curc[b+2]=bl;
   }
 
-  /* Neural lines update */
+  /* Neural lines */
   if(lines.visible){
-    for(let k=0;k<NPAIRS.length;k+=2){
-      const a=NPAIRS[k],bk=NPAIRS[k+1],li=(k/2)*6;
-      linePos[li]  =cur[a*3];  linePos[li+1]=cur[a*3+1];linePos[li+2]=cur[a*3+2];
-      linePos[li+3]=cur[bk*3]; linePos[li+4]=cur[bk*3+1];linePos[li+5]=cur[bk*3+2];
+    for(let k=0;k<NP.length;k+=2){
+      const a=NP[k],bk=NP[k+1],li=(k/2)*6;
+      lPos[li]  =cur[a*3];  lPos[li+1]=cur[a*3+1];lPos[li+2]=cur[a*3+2];
+      lPos[li+3]=cur[bk*3]; lPos[li+4]=cur[bk*3+1];lPos[li+5]=cur[bk*3+2];
     }
-    lineGeo.attributes.position.needsUpdate=true;
+    lGeo.attributes.position.needsUpdate=true;
   }
   geo.attributes.position.needsUpdate=true;
   geo.attributes.color.needsUpdate=true;
 
-  /* Camera: slowly zoom in + mouse parallax */
-  mxl=lerp(mxl,(mouseX/innerWidth -.5)*3.2,.05);
-  myl=lerp(myl,(mouseY/innerHeight-.5)*-2.2,.05);
-  const cz=lerp(15,11,eio(clamp(s*2.5,0,1)));
+  /* Camera */
+  mxl=lerp(mxl,(mouseX/innerWidth -.5)*3.0,.05);
+  myl=lerp(myl,(mouseY/innerHeight-.5)*-2.0,.05);
+  const cz=lerp(14,10,eio(clamp(s*2.5,0,1)));
   camera.position.set(mxl,myl,cz);
-  camera.lookAt(mxl*.25,myl*.25,0);
+  camera.lookAt(mxl*.2,myl*.2,0);
 
   renderer.render(scene,camera);
 }
 
 /* ─── Events ─── */
-let mouseX=innerWidth/2, mouseY=innerHeight/2;
+let mouseX=innerWidth/2,mouseY=innerHeight/2;
 window.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
-window.addEventListener('scroll',()=>{sRaw=getS();syncCanvas();},{passive:true});
+window.addEventListener('scroll',()=>{sRaw=getS();},{passive:true});
 window.addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);
 });
 
-/* IntersectionObserver: scroll reveal */
+/* Scroll reveal */
 const io=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
-},{threshold:.12});
+},{threshold:.10});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 
-syncCanvas();
 tick();
 })();
 </script>
