@@ -207,9 +207,8 @@ body{
   flex-shrink:0;color:var(--teal);font-size:11px;
 }
 
-/* dissolve on scroll — slow, gentle blur */
-.diss{transition:opacity 2.4s ease,transform 2.6s ease,filter 2.2s ease}
-.diss.gone{opacity:0;transform:translateY(-10px);filter:blur(10px);pointer-events:none}
+/* dissolve driven by JS inline styles — no class toggle needed */
+.diss{will-change:opacity,filter,transform}
 
 /* ════════════════════════════════
    SECTION 3 — LONGEVITY SYSTEM
@@ -841,10 +840,19 @@ function getS(){
 
 /* Dissolve section 2 text into particles */
 const dissEls=document.querySelectorAll('#s2 .diss');
-let diss=false;
 function syncDiss(s){
-  if(s>.18&&!diss){diss=true; dissEls.forEach(e=>e.classList.add('gone'));}
-  if(s<.08&& diss){diss=false;dissEls.forEach(e=>e.classList.remove('gone'));}
+  // dissolve window: s 0.12 → 0.42 (scroll-driven, not class-toggled)
+  const t=clamp((s-.12)/.30,0,1);
+  const op=1-t;
+  const bl=t*12;          // blur up to 12px
+  const ty=t*-14;         // drift up 14px
+  const pe=t>.98?'none':''; // disable pointer events when fully gone
+  dissEls.forEach(e=>{
+    e.style.opacity=op;
+    e.style.filter=`blur(${bl}px)`;
+    e.style.transform=`translateY(${ty}px)`;
+    e.style.pointerEvents=pe;
+  });
 }
 
 const oLive=new Float32Array(3);
