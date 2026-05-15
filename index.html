@@ -234,18 +234,18 @@ body{
 .pillar-detail{font-size:13px;color:var(--muted);line-height:1.55;padding-left:31px}
 
 /* ════════════════════════════════
-   SECTION 4 — CTA
+   SECTION 4 — ELITE DOCTORS
 ════════════════════════════════ */
 #s4{min-height:160vh}
 
 .s4-inner{
   width:100%;display:flex;flex-direction:column;align-items:center;
   text-align:center;padding:0 28px;pointer-events:all;
-  max-width:700px;margin:0 auto;
+  max-width:1100px;margin:0 auto;
 }
 .s4-title{
-  font-size:clamp(36px,6vw,70px);font-weight:900;
-  line-height:1.07;letter-spacing:-.03em;margin-bottom:20px;
+  font-size:clamp(32px,5vw,62px);font-weight:900;
+  line-height:1.07;letter-spacing:-.03em;margin-bottom:16px;
 }
 .s4-title .grad{
   background:linear-gradient(120deg,var(--teal),var(--blue));
@@ -253,7 +253,7 @@ body{
 }
 .s4-body{
   font-size:18px;color:var(--muted);line-height:1.7;
-  max-width:520px;margin-bottom:38px;
+  max-width:560px;margin-bottom:44px;
 }
 .btn-xl{
   display:inline-flex;align-items:center;gap:12px;
@@ -264,6 +264,71 @@ body{
   box-shadow:0 0 70px rgba(0,200,150,.42);
 }
 .btn-xl:hover{transform:translateY(-4px);box-shadow:0 14px 70px rgba(0,200,150,.58)}
+
+/* ── Doctor Carousel ── */
+.doc-carousel-wrap{
+  position:relative;width:100%;margin-bottom:44px;
+  padding:0 32px; /* room for arrows */
+}
+.doc-track-clip{
+  overflow:hidden;
+  width:100%;
+  padding: 10px 0;
+}
+.doc-track{
+  display:flex;gap:24px;
+  transition:transform .55s cubic-bezier(.42,0,.22,1);
+  will-change:transform;
+}
+.doc-card{
+  flex:0 0 calc((100% - 48px)/3);
+  background:rgba(6,10,24,0.72);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px 24px 24px;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+  transition:transform .22s,border-color .22s;
+}
+.doc-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(0,200,150,.35);
+}
+.doc-photo{
+  width:100px;height:100px;border-radius:50%;
+  object-fit:cover;margin-bottom:16px;
+  border:2px solid rgba(0,200,150,.30);
+  background:rgba(255,255,255,.05);
+}
+.doc-name{
+  font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;
+}
+.doc-role{
+  font-size:13px;color:var(--muted);line-height:1.5;
+}
+/* Nav arrows */
+.car-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(6,10,24,.82);backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  color:var(--text);font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s;
+  z-index:5;pointer-events:all;
+}
+.car-btn:hover{background:rgba(0,200,150,.18);border-color:rgba(0,200,150,.4)}
+.car-btn.prev{left:0}
+.car-btn.next{right:0}
+/* Dots */
+.car-dots{display:flex;gap:8px;justify-content:center;margin-bottom:36px;}
+.car-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.20);cursor:pointer;
+  transition:background .25s,transform .25s;pointer-events:all;
+}
+.car-dot.active{background:var(--teal);transform:scale(1.35)}
 
 /* ════════════════════════════════
    FOOTER
@@ -395,21 +460,72 @@ footer{
   </div>
 </section>
 
-<!-- ══════════ S4: CTA (z-index:1, transparent) ══════════ -->
+<!-- ══════════ S4: ELITE LONGEVITY DOCTORS (z-index:1, transparent) ══════════ -->
 <section id="s4" class="sect">
   <div class="sticky-wrap" style="justify-content:center">
     <div class="s4-inner">
-      <p class="eyebrow rv">Join Peak Health</p>
+      <p class="eyebrow rv">Our Medical Team</p>
       <h2 class="s4-title rv d1">
-        Longevity Shouldn't<br>Be a <span class="grad">Luxury</span>
+        Elite <span class="grad">Longevity</span> Doctors
       </h2>
       <p class="s4-body rv d2">
-        The level of care once reserved for the elite now accessible for
-        anyone who wants to live at their Peak Health.
+        Trained at the highest levels to prevent decline and disease,<br>not just react to it.
       </p>
+
+      <!-- Carousel -->
+      <div class="doc-carousel-wrap rv d3" style="width:100%;max-width:960px;">
+        <button class="car-btn prev" id="carPrev" aria-label="Previous">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="doc-track-clip"><div class="doc-track" id="docTrack">
+          <!-- Card 1 -->
+          <div class="doc-card">
+            <img class="doc-photo" src="https://framerusercontent.com/images/glCgqfhP5uSh5vM38zgO81EhQ5w.png" alt="Dr. Sara Szal" loading="lazy">
+            <div class="doc-name">Dr. Sara Szal</div>
+            <div class="doc-role">Director of Precision Medicine &amp; Longevity, Marcus Institute</div>
+          </div>
+          <!-- Card 2 -->
+          <div class="doc-card">
+            <img class="doc-photo" src="https://framerusercontent.com/images/Y3qeX8RUqp2Ir4t5pt8MaCk83O0.png" alt="Dr. Sunjya Schweig" loading="lazy">
+            <div class="doc-name">Dr. Sunjya Schweig</div>
+            <div class="doc-role">President, California Center of Functional Medicine</div>
+          </div>
+          <!-- Card 3 -->
+          <div class="doc-card">
+            <img class="doc-photo" src="https://framerusercontent.com/images/wKhjYNm9OOgm2zzvyGNffx0HrkY.png" alt="Dr. Suzanne Soriano" loading="lazy">
+            <div class="doc-name">Dr. Suzanne Soriano</div>
+            <div class="doc-role">Leadership, Early Medical &amp; Apple Health</div>
+          </div>
+          <!-- Card 4 -->
+          <div class="doc-card">
+            <img class="doc-photo" src="https://framerusercontent.com/images/SiP5EOXw8hWiU4lhqh9YBnhKeWU.jpg" alt="Dr. Chris Capicotto" loading="lazy">
+            <div class="doc-name">Dr. Chris Capicotto</div>
+            <div class="doc-role">Leadership, Primary Precision Medicine &amp; Comite</div>
+          </div>
+          <!-- Card 5 -->
+          <div class="doc-card">
+            <img class="doc-photo" src="https://framerusercontent.com/images/TFOu6cEBca0UyqWXxT4NFIHbQ.png" alt="Dr. Patrick Sanger" loading="lazy">
+            <div class="doc-name">Dr. Patrick Sanger</div>
+            <div class="doc-role">Longevity &amp; Precision Medicine Specialist</div>
+          </div>
+          <!-- Card 6 -->
+          <div class="doc-card">
+            <img class="doc-photo" src="https://framerusercontent.com/images/TdxUz7wvfodof8LkNsUKKRlKbXs.png" alt="Dr. Betyshia Belardo" loading="lazy">
+            <div class="doc-name">Dr. Betyshia Belardo</div>
+            <div class="doc-role">Longevity Family Medicine, Sentara Health</div>
+          </div>
+        </div></div><!-- /doc-track /doc-track-clip -->
+        <button class="car-btn next" id="carNext" aria-label="Next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Dots -->
+      <div class="car-dots rv d4" id="carDots"></div>
+
       <a href="https://getpeakhealth.typeform.com/longevity"
-         class="btn-xl rv d3" target="_blank" rel="noopener">
-        Get Peak Health
+         class="btn-xl rv d4" target="_blank" rel="noopener">
+        Start Longevity Consult
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -418,6 +534,53 @@ footer{
     </div>
   </div>
 </section>
+
+<script>
+/* ── Doctor Carousel Logic ── */
+(function(){
+  const track   = document.getElementById('docTrack');
+  const cards   = Array.from(track.querySelectorAll('.doc-card'));
+  const dotsWrap= document.getElementById('carDots');
+  const btnPrev = document.getElementById('carPrev');
+  const btnNext = document.getElementById('carNext');
+  const PER_PAGE= 3;
+  const TOTAL   = cards.length;
+  const STEPS   = TOTAL - PER_PAGE + 1; // positions 0..3
+  let cur = 0, timer;
+
+  /* Build dots */
+  const dots = Array.from({length:STEPS},(_,i)=>{
+    const d = document.createElement('button');
+    d.className='car-dot'+(i===0?' active':'');
+    d.setAttribute('aria-label','Slide '+(i+1));
+    d.addEventListener('click',()=>goTo(i));
+    dotsWrap.appendChild(d);
+    return d;
+  });
+
+  function goTo(idx){
+    cur = (idx + STEPS) % STEPS;
+    const cardW = cards[0].offsetWidth || 290;
+    const gap   = 24;
+    track.style.transform=`translateX(-${cur*(cardW+gap)}px)`;
+    dots.forEach((d,i)=>d.classList.toggle('active',i===cur));
+    resetTimer();
+  }
+
+  function resetTimer(){
+    clearInterval(timer);
+    timer = setInterval(()=>goTo(cur+1), 4000);
+  }
+
+  btnPrev.addEventListener('click',()=>goTo(cur-1));
+  btnNext.addEventListener('click',()=>goTo(cur+1));
+
+  /* Recalculate on resize */
+  window.addEventListener('resize',()=>goTo(cur));
+
+  resetTimer();
+})();
+</script>
 
 <footer>
   <p>© 2025 Get Peak Health · All rights reserved.</p>
@@ -694,8 +857,7 @@ function tick(){
   if(s<.46)orbST=-1;
   const orbT=orbST>=0?T-orbST:0;
 
-  lines.visible  =pNeu>.05;
-  lMat.opacity   =.08+pNeuF*.22;
+  lines.visible  =false;
 
   /* Live-spin the DNA — strands + rung particles + rung lines */
   const spin=T*.32;
