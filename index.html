@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Peak Health — Add Better Years to Your Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --teal:#00C896;
+  --blue:#4A8BFF;
+  --purple:#9B6DFF;
+  --bg:#060A18;
+  --text:#DDE8FF;
+  --muted:#7A9BC4;
+  --border:rgba(255,255,255,0.08);
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  overflow-x:hidden;
+}
+
+/* ── Fixed 3D canvas ── */
+#c{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.2s ease;
+}
+#c.visible{opacity:1}
+
+/* ════════════════════════════════
+   SECTION 1 — VIDEO HERO
+════════════════════════════════ */
+#s1{
+  position:relative;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  z-index:1;
+}
+#hero-video{
+  position:absolute;
+  inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  filter:brightness(.42) saturate(1.1);
+  z-index:0;
+}
+.hero-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(6,10,24,.55) 0%,
+    rgba(6,10,24,.15) 45%,
+    rgba(6,10,24,.82) 100%
+  );
+  z-index:1;
+}
+.hero-content{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  max-width:820px;
+  padding:0 28px;
+}
+.badge-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom:30px;
+}
+.badge{
+  background:rgba(0,200,150,.12);
+  border:1px solid rgba(0,200,150,.38);
+  color:var(--teal);
+  padding:6px 18px;
+  border-radius:100px;
+  font-size:12.5px;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.hero-title{
+  font-size:clamp(44px,8vw,92px);
+  font-weight:900;
+  line-height:1.04;
+  letter-spacing:-.035em;
+  color:#fff;
+  margin-bottom:22px;
+}
+.hero-title .grad{
+  background:linear-gradient(120deg,var(--teal) 0%,#4AF0C8 40%,var(--blue) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(16px,2.3vw,21px);
+  color:rgba(221,232,255,.82);
+  max-width:600px;
+  margin:0 auto 38px;
+  line-height:1.65;
+}
+.btn-primary{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:linear-gradient(130deg,var(--teal),#00B8D4);
+  color:#fff;
+  padding:16px 38px;
+  border-radius:100px;
+  font-size:16px;
+  font-weight:700;
+  text-decoration:none;
+  letter-spacing:.01em;
+  transition:transform .22s,box-shadow .22s;
+  box-shadow:0 0 50px rgba(0,200,150,.38);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 60px rgba(0,200,150,.55)}
+.scroll-cue{
+  position:absolute;
+  bottom:30px;left:50%;
+  transform:translateX(-50%);
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  color:rgba(255,255,255,.38);
+  font-size:11px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  animation:bob 2.2s ease-in-out infinite;
+}
+.scroll-cue::after{
+  content:'';
+  width:1px;height:38px;
+  background:linear-gradient(to bottom,rgba(0,200,150,.55),transparent);
+}
+@keyframes bob{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(8px)}
+}
+
+/* ════════════════════════════════
+   SECTIONS 2–4 SHARED
+════════════════════════════════ */
+.sect{position:relative;z-index:1}
+
+.sticky-wrap{
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+}
+
+/* ════════════════════════════════
+   SECTION 2 — BLIND SPOTS
+════════════════════════════════ */
+#s2{min-height:250vh}
+
+.s2-inner{
+  padding:0 6vw;
+  max-width:600px;
+  pointer-events:all;
+}
+
+.eyebrow{
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--teal);
+  margin-bottom:18px;
+}
+.sect-h2{
+  font-size:clamp(30px,4.5vw,54px);
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-.025em;
+  margin-bottom:18px;
+}
+.sect-h2 .grad{
+  background:linear-gradient(120deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.sect-body{
+  font-size:16.5px;
+  color:var(--muted);
+  line-height:1.72;
+  margin-bottom:26px;
+}
+.cond-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:28px;
+}
+.cond-tag{
+  background:rgba(74,139,255,.09);
+  border:1px solid rgba(74,139,255,.22);
+  color:rgba(221,232,255,.78);
+  padding:5px 13px;
+  border-radius:6px;
+  font-size:13px;
+  font-weight:500;
+  transition:background .25s,border-color .25s;
+}
+.cond-tag:hover{background:rgba(74,139,255,.18);border-color:rgba(74,139,255,.4)}
+.check-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.check-list li{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:15.5px;
+  font-weight:500;
+}
+.check-icon{
+  width:24px;height:24px;
+  background:rgba(0,200,150,.12);
+  border:1px solid rgba(0,200,150,.35);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  color:var(--teal);
+  font-size:12px;
+}
+
+/* Text dissolve on scroll */
+.diss{transition:opacity .85s ease,transform .85s ease,filter .85s ease}
+.diss.gone{opacity:0;transform:scale(1.04) translateY(-10px);filter:blur(5px);pointer-events:none}
+
+/* ════════════════════════════════
+   SECTION 3 — LONGEVITY SYSTEM
+════════════════════════════════ */
+#s3{min-height:230vh}
+
+.s3-inner{
+  padding:0 6vw;
+  margin-left:auto;
+  max-width:540px;
+  pointer-events:all;
+}
+.pillar-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:28px;
+}
+.pillar{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px 22px;
+  transition:border-color .3s,background .3s;
+}
+.pillar:hover{background:rgba(255,255,255,.07);border-color:rgba(0,200,150,.25)}
+.pillar-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:8px;
+}
+.pillar-icon{font-size:20px;line-height:1}
+.pillar-title{font-size:15.5px;font-weight:700;color:var(--text)}
+.pillar-detail{font-size:13.5px;color:var(--muted);line-height:1.55;padding-left:32px}
+
+/* ════════════════════════════════
+   SECTION 4 — CTA
+════════════════════════════════ */
+#s4{min-height:160vh}
+
+.s4-inner{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  padding:0 28px;
+  pointer-events:all;
+}
+.s4-title{
+  font-size:clamp(36px,6vw,72px);
+  font-weight:900;
+  line-height:1.07;
+  letter-spacing:-.03em;
+  margin-bottom:22px;
+}
+.s4-title .grad{
+  background:linear-gradient(120deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.s4-body{
+  font-size:18px;
+  color:var(--muted);
+  line-height:1.7;
+  max-width:540px;
+  margin-bottom:40px;
+}
+.btn-xl{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  background:linear-gradient(130deg,var(--teal),#00B8D4);
+  color:#fff;
+  padding:20px 52px;
+  border-radius:100px;
+  font-size:18px;
+  font-weight:700;
+  text-decoration:none;
+  letter-spacing:.01em;
+  transition:transform .22s,box-shadow .22s;
+  box-shadow:0 0 70px rgba(0,200,150,.42);
+}
+.btn-xl:hover{transform:translateY(-4px);box-shadow:0 14px 70px rgba(0,200,150,.58)}
+
+/* ════════════════════════════════
+   FOOTER
+════════════════════════════════ */
+footer{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  padding:36px 24px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:13.5px;
+  background:rgba(6,10,24,.97);
+}
+
+/* ════════════════════════════════
+   REVEAL ANIMATIONS
+════════════════════════════════ */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.1s}
+.rv.d2{transition-delay:.22s}
+.rv.d3{transition-delay:.35s}
+.rv.d4{transition-delay:.48s}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<!-- ══════════ SECTION 1: VIDEO HERO ══════════ -->
+<section id="s1">
+  <video id="hero-video" autoplay muted loop playsinline>
+    <source src="videos/getpeakvideo.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="badge-row">
+      <span class="badge rv in">Elite Longevity Doctors</span>
+      <span class="badge rv in d1">Advanced Testing &amp; Diagnostics</span>
+    </div>
+    <h1 class="hero-title rv in d2">
+      Add <span class="grad">Better Years</span><br>to Your Life
+    </h1>
+    <p class="hero-sub rv in d3">
+      Doctor-led longevity care designed to help you live healthier,
+      longer. Join the waitlist for your free longevity consult.
+    </p>
+    <a href="https://getpeakhealth.typeform.com/longevity"
+       class="btn-primary rv in d4" target="_blank" rel="noopener">
+      Start Free Consult
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<!-- ══════════ SECTION 2: BLIND SPOTS ══════════ -->
+<section id="s2" class="sect">
+  <div class="sticky-wrap">
+    <div class="s2-inner">
+      <p class="eyebrow rv diss">Precision Diagnostics</p>
+      <h2 class="sect-h2 rv d1 diss">
+        Turn Your Biological<br>
+        <span class="grad">Blind Spots</span><br>
+        into Breakthroughs
+      </h2>
+      <p class="sect-body rv d2 diss">
+        Most people walk around with preventable conditions going undetected.
+        We identify and address the root causes — before they become problems.
+      </p>
+      <div class="cond-grid rv d3 diss">
+        <span class="cond-tag">Brain Fog</span>
+        <span class="cond-tag">Insulin Resistance</span>
+        <span class="cond-tag">Low Libido</span>
+        <span class="cond-tag">Cognitive Decline</span>
+        <span class="cond-tag">Muscle Loss</span>
+        <span class="cond-tag">Sleep Decline</span>
+        <span class="cond-tag">Leaky Gut</span>
+        <span class="cond-tag">Hormones</span>
+        <span class="cond-tag">Bone Density</span>
+        <span class="cond-tag">Menopause</span>
+        <span class="cond-tag">Cardiovascular Risk</span>
+        <span class="cond-tag">Weight Gain</span>
+        <span class="cond-tag">Inflammation</span>
+        <span class="cond-tag">Thyroid</span>
+      </div>
+      <ul class="check-list rv d4 diss">
+        <li><span class="check-icon">✓</span>Continuous Monitoring</li>
+        <li><span class="check-icon">✓</span>Doctor-Led Protocols</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SECTION 3: LONGEVITY SYSTEM ══════════ -->
+<section id="s3" class="sect">
+  <div class="sticky-wrap" style="justify-content:flex-end">
+    <div class="s3-inner">
+      <p class="eyebrow rv">The System</p>
+      <h2 class="sect-h2 rv d1">
+        The Peak Health<br>
+        <span class="grad">Longevity System</span>
+      </h2>
+      <div class="pillar-list">
+        <div class="pillar rv d2">
+          <div class="pillar-head">
+            <span class="pillar-icon">🔬</span>
+            <span class="pillar-title">Advanced Testing &amp; Diagnostics</span>
+          </div>
+          <p class="pillar-detail">
+            350+ biomarkers · 200+ labs · 2× a year<br>
+            Body scans and performance testing
+          </p>
+        </div>
+        <div class="pillar rv d3">
+          <div class="pillar-head">
+            <span class="pillar-icon">👨‍⚕️</span>
+            <span class="pillar-title">Access to Elite Longevity Doctors</span>
+          </div>
+          <p class="pillar-detail">
+            Trained in precision longevity care<br>
+            Delivered through telemedicine
+          </p>
+        </div>
+        <div class="pillar rv d4">
+          <div class="pillar-head">
+            <span class="pillar-icon">📋</span>
+            <span class="pillar-title">A Personalized Longevity Plan</span>
+          </div>
+          <p class="pillar-detail">
+            Prescriptions: Peptides, Hormones, GLP-1s<br>
+            Supplements, nutrition, and fitness plans
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SECTION 4: CTA ══════════ -->
+<section id="s4" class="sect">
+  <div class="sticky-wrap" style="justify-content:center">
+    <div class="s4-inner">
+      <p class="eyebrow rv">Join Peak Health</p>
+      <h2 class="s4-title rv d1">
+        Longevity Shouldn't<br>Be a <span class="grad">Luxury</span>
+      </h2>
+      <p class="s4-body rv d2">
+        The level of care once reserved for the elite now accessible for
+        anyone who wants to live at their Peak Health.
+      </p>
+      <a href="https://getpeakhealth.typeform.com/longevity"
+         class="btn-xl rv d3" target="_blank" rel="noopener">
+        Get Peak Health
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Get Peak Health · All rights reserved.</p>
+</footer>
+
+<!-- Three.js r128 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ─── Math helpers ─── */
+const lerp  = (a,b,t) => a+(b-a)*t;
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+const ci01  = (lo,hi,v) => clamp((v-lo)/(hi-lo),0,1);
+function eio(t){ return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 }
+
+/* ─── Renderer + Scene ─── */
+const cvs      = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,200);
+camera.position.set(0,0,15);
+
+/* ─── Glow sprite texture ─── */
+const gc = document.createElement('canvas');
+gc.width = gc.height = 64;
+const gtx = gc.getContext('2d');
+const grd = gtx.createRadialGradient(32,32,0,32,32,32);
+grd.addColorStop(0,   'rgba(255,255,255,1)');
+grd.addColorStop(.35, 'rgba(255,255,255,.65)');
+grd.addColorStop(1,   'rgba(255,255,255,0)');
+gtx.fillStyle=grd; gtx.fillRect(0,0,64,64);
+const ptex = new THREE.CanvasTexture(gc);
+
+/* ─── Particle system ─── */
+const N = 1100;
+
+const posA = new Float32Array(N*3); // DNA helix
+const posB = new Float32Array(N*3); // Burst
+const posC = new Float32Array(N*3); // Fibonacci sphere
+const posF = new Float32Array(N*3); // Neural hubs
+
+const cur  = new Float32Array(N*3); // live positions
+const curc = new Float32Array(N*3); // live colors
+
+const orbY  = new Float32Array(N);
+const nFreq = new Float32Array(N);
+const nPhase= new Float32Array(N);
+const nAmp  = new Float32Array(N);
+const nDir  = new Float32Array(N*3);
+
+/* DNA double helix */
+for(let i=0;i<N;i++){
+  const t  = (i/N)*Math.PI*16;
+  const ph = (i%2)*Math.PI;
+  const r  = 2.6;
+  posA[i*3]   = Math.cos(t+ph)*r;
+  posA[i*3+1] = (i/N)*22-11;
+  posA[i*3+2] = Math.sin(t+ph)*r;
+}
+
+/* Explosion burst */
+for(let i=0;i<N;i++){
+  const th = Math.acos(2*Math.random()-1);
+  const ph = Math.random()*Math.PI*2;
+  const r  = 9+Math.random()*9;
+  posB[i*3]   = r*Math.sin(th)*Math.cos(ph);
+  posB[i*3+1] = r*Math.sin(th)*Math.sin(ph);
+  posB[i*3+2] = r*Math.cos(th);
+}
+
+/* Fibonacci sphere */
+for(let i=0;i<N;i++){
+  const th  = Math.acos(1-2*(i+.5)/N);
+  const phi = Math.PI*(1+Math.sqrt(5))*i;
+  const r   = 6.8;
+  posC[i*3]   = r*Math.sin(th)*Math.cos(phi);
+  posC[i*3+1] = r*Math.sin(th)*Math.sin(phi);
+  posC[i*3+2] = r*Math.cos(th);
+  orbY[i]     = (Math.random()-.5)*.5;
+}
+
+/* Neural hub clusters */
+const HUB=[[3,1.5,0],[-3,-1.5,1],[0,3,-2],[-1.5,1,3.5],[2.5,-3,.5],[0,-1,-3.5]];
+for(let i=0;i<N;i++){
+  const h   = HUB[i%HUB.length];
+  const spr = i<N*.18 ? 4+Math.random()*3.5 : 1.5+Math.random()*2;
+  posF[i*3]   = h[0]+(Math.random()-.5)*spr;
+  posF[i*3+1] = h[1]+(Math.random()-.5)*spr;
+  posF[i*3+2] = h[2]+(Math.random()-.5)*spr;
+  nFreq[i]  = .7+Math.random()*2.8;
+  nPhase[i] = Math.random()*Math.PI*2;
+  nAmp[i]   = i<N*.18 ? 3+Math.random()*4 : .25+Math.random()*.7;
+  let dx=Math.random()-.5,dy=Math.random()-.5,dz=Math.random()-.5;
+  const dl=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
+  nDir[i*3]=dx/dl; nDir[i*3+1]=dy/dl; nDir[i*3+2]=dz/dl;
+}
+
+/* Neural connection pairs */
+const NPAIRS=[];
+{
+  const LIM=4.8, LIM2=LIM*LIM, MAX=320;
+  for(let i=0;i<N&&NPAIRS.length<MAX*2;i++){
+    for(let j=i+1;j<N&&NPAIRS.length<MAX*2;j++){
+      const dx=posF[i*3]-posF[j*3],
+            dy=posF[i*3+1]-posF[j*3+1],
+            dz=posF[i*3+2]-posF[j*3+2];
+      if(dx*dx+dy*dy+dz*dz<LIM2) NPAIRS.push(i,j);
+    }
+  }
+}
+
+/* Sphere colors */
+const colSph=new Float32Array(N*3);
+for(let i=0;i<N;i++){
+  colSph[i*3]  =.08+Math.random()*.38;
+  colSph[i*3+1]=.48+Math.random()*.52;
+  colSph[i*3+2]=.82+Math.random()*.18;
+}
+
+/* Orbital ring colors */
+const colOrb=new Float32Array(N*3);
+{
+  const np=Math.floor(N/3);
+  for(let i=0;i<N;i++){
+    if(i<np)      {colOrb[i*3]=0;   colOrb[i*3+1]=.88;colOrb[i*3+2]=.62;}
+    else if(i<np*2){colOrb[i*3]=.22;colOrb[i*3+1]=.55;colOrb[i*3+2]=1;}
+    else           {colOrb[i*3]=.62;colOrb[i*3+1]=.3; colOrb[i*3+2]=1;}
+  }
+}
+
+/* Three.js geometry */
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.BufferAttribute(cur, 3).setUsage(THREE.DynamicDrawUsage));
+geo.setAttribute('color',   new THREE.BufferAttribute(curc,3).setUsage(THREE.DynamicDrawUsage));
+geo.setAttribute('size',    new THREE.BufferAttribute(new Float32Array(N).fill(16),1));
+
+const pMat=new THREE.ShaderMaterial({
+  uniforms:{uTex:{value:ptex}},
+  vertexShader:`
+    attribute float size;
+    attribute vec3  color;
+    varying   vec3  vCol;
+    void main(){
+      vCol=color;
+      vec4 mv=modelViewMatrix*vec4(position,1.);
+      gl_PointSize=size*(580./-mv.z);
+      gl_Position=projectionMatrix*mv;
+    }
+  `,
+  fragmentShader:`
+    uniform sampler2D uTex;
+    varying vec3 vCol;
+    void main(){
+      float a=texture2D(uTex,gl_PointCoord).r;
+      if(a<.04)discard;
+      gl_FragColor=vec4(vCol,a);
+    }
+  `,
+  transparent:true,
+  blending:THREE.AdditiveBlending,
+  depthWrite:false,
+  vertexColors:true,
+});
+const pts=new THREE.Points(geo,pMat);
+scene.add(pts);
+
+/* Neural line segments */
+const linePos=new Float32Array((NPAIRS.length/2)*6);
+const lineGeo=new THREE.BufferGeometry();
+lineGeo.setAttribute('position',new THREE.BufferAttribute(linePos,3).setUsage(THREE.DynamicDrawUsage));
+const lineMat=new THREE.LineBasicMaterial({
+  color:0x4A8BFF,transparent:true,opacity:.10,
+  blending:THREE.AdditiveBlending,depthWrite:false
+});
+const lines=new THREE.LineSegments(lineGeo,lineMat);
+scene.add(lines);
+lines.visible=false;
+
+/* Orbital position helper */
+function orbPos(i,t,out,b){
+  const np=Math.floor(N/3);
+  if(i<np){
+    const a=(i/np)*Math.PI*2+t*.72;
+    out[b]=Math.cos(a)*6.5; out[b+1]=orbY[i]; out[b+2]=Math.sin(a)*6.5;
+  } else if(i<np*2){
+    const j=i-np,a=(j/np)*Math.PI*2-t*.56,r=5.0,tl=Math.PI*.3;
+    out[b]=Math.cos(a)*r; out[b+1]=Math.sin(a)*Math.sin(tl)*r; out[b+2]=Math.sin(a)*Math.cos(tl)*r;
+  } else {
+    const np3=N-np*2,j=i-np*2,a=(j/np3)*Math.PI*2+t*1.08,r=3.8,tl=-Math.PI*.3;
+    out[b]=Math.cos(a)*r; out[b+1]=Math.sin(a)*Math.sin(tl)*r; out[b+2]=Math.sin(a)*Math.cos(tl)*r;
+  }
+}
+
+/* ─── State ─── */
+let sRaw=0, sSmooth=0, T=0, orbStartT=-1, mxl=0, myl=0;
+const s1El=document.getElementById('s1');
+
+function getS(){
+  const s1H =s1El.offsetHeight;
+  const maxS=document.documentElement.scrollHeight-innerHeight;
+  const tot =maxS-s1H;
+  return tot>0 ? clamp((scrollY-s1H)/tot,0,1) : 0;
+}
+
+/* Canvas visibility — hide during hero, show when entering section 2 */
+function syncCanvas(){
+  cvs.classList.toggle('visible', scrollY > s1El.offsetHeight*.65);
+}
+
+/* Section 2 text dissolve */
+const dissEls=document.querySelectorAll('#s2 .diss');
+let dissolved=false;
+function syncDissolve(s){
+  if(s>.09&&!dissolved){ dissolved=true;  dissEls.forEach(e=>e.classList.add('gone')); }
+  if(s<.05&& dissolved){ dissolved=false; dissEls.forEach(e=>e.classList.remove('gone')); }
+}
+
+/* Per-frame orbital live scratch buffer */
+const orbLive=new Float32Array(3);
+
+/* ─── Main loop ─── */
+function tick(){
+  requestAnimationFrame(tick);
+  T+=.016;
+  sSmooth=lerp(sSmooth,sRaw,.072);
+  const s=sSmooth;
+
+  syncDissolve(s);
+
+  /* Phase transitions */
+  const pEx   =eio(ci01(.08,.28,s));   // DNA → Explosion
+  const pSp   =eio(ci01(.28,.50,s));   // Explosion → Sphere
+  const pOrb  =eio(ci01(.52,.68,s));   // Sphere → Orbital
+  const pNeu  =eio(ci01(.78,.90,s));   // Orbital → Neural
+  const pNeuF =ci01(.90,1.0,s);        // Full neural
+
+  /* Orbital clock – reset when phase starts */
+  if(s>.52&&orbStartT<0) orbStartT=T;
+  if(s<.48)              orbStartT=-1;
+  const orbT=orbStartT>=0 ? T-orbStartT : 0;
+
+  lines.visible  =pNeu>.05;
+  lineMat.opacity=.07+pNeuF*.22;
+
+  /* ── Per-particle update ── */
+  for(let i=0;i<N;i++){
+    const b=i*3;
+
+    /* Live orbital pos */
+    if(pOrb>0||pNeu>0) orbPos(i,orbT,orbLive,0);
+
+    /* Position */
+    let x,y,z;
+    if(pNeu>0){
+      const fire=(Math.sin(T*nFreq[i]+nPhase[i])+1)*.5;
+      const disp=nAmp[i]*fire;
+      const toX=posF[b]  +nDir[b]  *disp;
+      const toY=posF[b+1]+nDir[b+1]*disp;
+      const toZ=posF[b+2]+nDir[b+2]*disp;
+      const fX=pOrb>.999?orbLive[0]:lerp(posC[b],  orbLive[0],pOrb);
+      const fY=pOrb>.999?orbLive[1]:lerp(posC[b+1],orbLive[1],pOrb);
+      const fZ=pOrb>.999?orbLive[2]:lerp(posC[b+2],orbLive[2],pOrb);
+      x=lerp(fX,toX,pNeu); y=lerp(fY,toY,pNeu); z=lerp(fZ,toZ,pNeu);
+    } else if(pOrb>0){
+      x=lerp(posC[b],  orbLive[0],pOrb);
+      y=lerp(posC[b+1],orbLive[1],pOrb);
+      z=lerp(posC[b+2],orbLive[2],pOrb);
+    } else if(pSp>0){
+      x=lerp(posB[b],  posC[b],  pSp);
+      y=lerp(posB[b+1],posC[b+1],pSp);
+      z=lerp(posB[b+2],posC[b+2],pSp);
+    } else if(pEx>0){
+      x=lerp(posA[b],  posB[b],  pEx);
+      y=lerp(posA[b+1],posB[b+1],pEx);
+      z=lerp(posA[b+2],posB[b+2],pEx);
+    } else {
+      x=posA[b]; y=posA[b+1]; z=posA[b+2];
+    }
+    cur[b]=x; cur[b+1]=y; cur[b+2]=z;
+
+    /* Color */
+    let r,g,bl;
+    if(pNeu>0){
+      const fire=(Math.sin(T*nFreq[i]+nPhase[i])+1)*.5;
+      const f2=fire*fire;
+      const nr=.05+f2*.58, ng=.20+f2*.65, nb=.82+f2*.18;
+      const fR=pOrb>.999?colOrb[b]  :lerp(colSph[b],  colOrb[b],  pOrb);
+      const fG=pOrb>.999?colOrb[b+1]:lerp(colSph[b+1],colOrb[b+1],pOrb);
+      const fB=pOrb>.999?colOrb[b+2]:lerp(colSph[b+2],colOrb[b+2],pOrb);
+      r=lerp(fR,nr,pNeu); g=lerp(fG,ng,pNeu); bl=lerp(fB,nb,pNeu);
+    } else if(pOrb>0){
+      r =lerp(colSph[b],  colOrb[b],  pOrb);
+      g =lerp(colSph[b+1],colOrb[b+1],pOrb);
+      bl=lerp(colSph[b+2],colOrb[b+2],pOrb);
+    } else {
+      const blend=Math.max(pSp,pEx*.35);
+      r =lerp(0,   colSph[b],  blend);
+      g =lerp(.82, colSph[b+1],blend);
+      bl=lerp(.60, colSph[b+2],blend);
+    }
+    curc[b]=r; curc[b+1]=g; curc[b+2]=bl;
+  }
+
+  /* Neural lines update */
+  if(lines.visible){
+    for(let k=0;k<NPAIRS.length;k+=2){
+      const a=NPAIRS[k],bk=NPAIRS[k+1],li=(k/2)*6;
+      linePos[li]  =cur[a*3];  linePos[li+1]=cur[a*3+1];linePos[li+2]=cur[a*3+2];
+      linePos[li+3]=cur[bk*3]; linePos[li+4]=cur[bk*3+1];linePos[li+5]=cur[bk*3+2];
+    }
+    lineGeo.attributes.position.needsUpdate=true;
+  }
+  geo.attributes.position.needsUpdate=true;
+  geo.attributes.color.needsUpdate=true;
+
+  /* Camera: slowly zoom in + mouse parallax */
+  mxl=lerp(mxl,(mouseX/innerWidth -.5)*3.2,.05);
+  myl=lerp(myl,(mouseY/innerHeight-.5)*-2.2,.05);
+  const cz=lerp(15,11,eio(clamp(s*2.5,0,1)));
+  camera.position.set(mxl,myl,cz);
+  camera.lookAt(mxl*.25,myl*.25,0);
+
+  renderer.render(scene,camera);
+}
+
+/* ─── Events ─── */
+let mouseX=innerWidth/2, mouseY=innerHeight/2;
+window.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
+window.addEventListener('scroll',()=>{sRaw=getS();syncCanvas();},{passive:true});
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+/* IntersectionObserver: scroll reveal */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
+},{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+syncCanvas();
+tick();
+})();
+</script>
+</body>
+</html>
