@@ -198,9 +198,9 @@ body{
   flex-shrink:0;color:var(--teal);font-size:11px;
 }
 
-/* dissolve on scroll */
-.diss{transition:opacity .85s ease,transform .85s ease,filter .85s ease}
-.diss.gone{opacity:0;transform:scale(1.05) translateY(-12px);filter:blur(6px);pointer-events:none}
+/* dissolve on scroll — slow, gentle blur */
+.diss{transition:opacity 2.4s ease,transform 2.6s ease,filter 2.2s ease}
+.diss.gone{opacity:0;transform:translateY(-10px);filter:blur(10px);pointer-events:none}
 
 /* ════════════════════════════════
    SECTION 3 — LONGEVITY SYSTEM
@@ -462,13 +462,47 @@ const nPh  =new Float32Array(N);
 const nAmp =new Float32Array(N);
 const nDir =new Float32Array(N*3);
 
-/* DNA double helix — base angles stored so we can spin it live */
-const dnaBase=new Float32Array(N);
-for(let i=0;i<N;i++){
-  dnaBase[i]=(i/N)*Math.PI*18+(i%2)*Math.PI;
-  posA[i*3]  =Math.cos(dnaBase[i])*2.8;
-  posA[i*3+1]=(i/N)*17-8.5;
-  posA[i*3+2]=Math.sin(dnaBase[i])*2.8;
+/* ── DNA double helix — proper backbone + rungs ── */
+const DNA_TURNS=2.5, DNA_H=16, DNA_R=3.2;
+const DNA_NA=450;           // strand A (teal backbone)
+const DNA_NB=450;           // strand B (blue backbone)
+const DNA_NRUNGS=25;        // horizontal rung count
+const DNA_NPR=20;           // particles per rung  (500 total = N-900)
+
+// Per-particle helix parameter for live spin
+const dnaT=new Float32Array(N);
+
+// Strand A
+for(let i=0;i<DNA_NA;i++){
+  const t=(i/DNA_NA)*Math.PI*2*DNA_TURNS;
+  dnaT[i]=t;
+  posA[i*3]  =Math.cos(t)*DNA_R;
+  posA[i*3+1]=(i/DNA_NA)*DNA_H - DNA_H*.5;
+  posA[i*3+2]=Math.sin(t)*DNA_R;
+}
+// Strand B (π phase offset — opposite backbone)
+for(let i=0;i<DNA_NB;i++){
+  const t=(i/DNA_NB)*Math.PI*2*DNA_TURNS;
+  const b=DNA_NA+i;
+  dnaT[b]=t;
+  posA[b*3]  =Math.cos(t+Math.PI)*DNA_R;
+  posA[b*3+1]=(i/DNA_NB)*DNA_H - DNA_H*.5;
+  posA[b*3+2]=Math.sin(t+Math.PI)*DNA_R;
+}
+// Rung particles — bridge between strand A and B at evenly-spaced positions
+for(let r=0;r<DNA_NRUNGS;r++){
+  const t=(r/(DNA_NRUNGS-1))*Math.PI*2*DNA_TURNS;
+  const y=(r/(DNA_NRUNGS-1))*DNA_H - DNA_H*.5;
+  const ax=Math.cos(t)*DNA_R, az=Math.sin(t)*DNA_R;
+  const bx=Math.cos(t+Math.PI)*DNA_R, bz=Math.sin(t+Math.PI)*DNA_R;
+  for(let p=0;p<DNA_NPR;p++){
+    const u=p/(DNA_NPR-1);
+    const idx=DNA_NA+DNA_NB + r*DNA_NPR+p;
+    dnaT[idx]=t;
+    posA[idx*3]  =ax+(bx-ax)*u;
+    posA[idx*3+1]=y;
+    posA[idx*3+2]=az+(bz-az)*u;
+  }
 }
 
 /* Burst scatter */
@@ -559,6 +593,17 @@ const lMat=new THREE.LineBasicMaterial({color:0x4A8BFF,transparent:true,opacity:
 const lines=new THREE.LineSegments(lGeo,lMat);
 scene.add(lines);lines.visible=false;
 
+/* DNA rung lines — the horizontal bridges between the two backbones */
+const rungPos=new Float32Array(DNA_NRUNGS*6); // 2 endpoints × 3 per rung
+const rungGeo=new THREE.BufferGeometry();
+rungGeo.setAttribute('position',new THREE.BufferAttribute(rungPos,3).setUsage(THREE.DynamicDrawUsage));
+const rungMat=new THREE.LineBasicMaterial({
+  color:0xaaddff,transparent:true,opacity:.35,
+  blending:THREE.AdditiveBlending,depthWrite:false
+});
+const rungLines=new THREE.LineSegments(rungGeo,rungMat);
+scene.add(rungLines);
+
 /* Orbital position helper */
 function orbPos(i,t,out,b){
   const np=Math.floor(N/3);
@@ -588,8 +633,8 @@ function getS(){
 const dissEls=document.querySelectorAll('#s2 .diss');
 let diss=false;
 function syncDiss(s){
-  if(s>.09&&!diss){diss=true; dissEls.forEach(e=>e.classList.add('gone'));}
-  if(s<.04&& diss){diss=false;dissEls.forEach(e=>e.classList.remove('gone'));}
+  if(s>.18&&!diss){diss=true; dissEls.forEach(e=>e.classList.add('gone'));}
+  if(s<.08&& diss){diss=false;dissEls.forEach(e=>e.classList.remove('gone'));}
 }
 
 const oLive=new Float32Array(3);
@@ -617,14 +662,37 @@ function tick(){
   lines.visible  =pNeu>.05;
   lMat.opacity   =.08+pNeuF*.22;
 
-  /* Live-spin the DNA helix so it's clearly 3D */
+  /* Live-spin the DNA — strands + rung particles + rung lines */
+  const spin=T*.32;
+  rungLines.visible=pEx<.90;
   if(pEx<.99){
-    const spin=T*.35;
-    for(let i=0;i<N;i++){
-      const a=dnaBase[i]+spin;
-      posA[i*3]  =Math.cos(a)*2.8;
-      posA[i*3+2]=Math.sin(a)*2.8;
+    // Strand A
+    for(let i=0;i<DNA_NA;i++){
+      const a=dnaT[i]+spin;
+      posA[i*3]=Math.cos(a)*DNA_R; posA[i*3+2]=Math.sin(a)*DNA_R;
     }
+    // Strand B
+    for(let i=0;i<DNA_NB;i++){
+      const b=DNA_NA+i, a=dnaT[b]+spin+Math.PI;
+      posA[b*3]=Math.cos(a)*DNA_R; posA[b*3+2]=Math.sin(a)*DNA_R;
+    }
+    // Rung particles + rung line endpoints (same spin)
+    for(let r=0;r<DNA_NRUNGS;r++){
+      const t=(r/(DNA_NRUNGS-1))*Math.PI*2*DNA_TURNS+spin;
+      const y=(r/(DNA_NRUNGS-1))*DNA_H-DNA_H*.5;
+      const ax=Math.cos(t)*DNA_R, az=Math.sin(t)*DNA_R;
+      const bx=Math.cos(t+Math.PI)*DNA_R, bz=Math.sin(t+Math.PI)*DNA_R;
+      for(let p=0;p<DNA_NPR;p++){
+        const u=p/(DNA_NPR-1), idx=DNA_NA+DNA_NB+r*DNA_NPR+p;
+        posA[idx*3]=ax+(bx-ax)*u; posA[idx*3+2]=az+(bz-az)*u;
+      }
+      // Update rung line segment
+      const li=r*6;
+      rungPos[li]  =ax; rungPos[li+1]=y; rungPos[li+2]=az;
+      rungPos[li+3]=bx; rungPos[li+4]=y; rungPos[li+5]=bz;
+    }
+    rungGeo.attributes.position.needsUpdate=true;
+    rungMat.opacity=.38*(1-pEx*1.2); // fade out during explosion
   }
 
   for(let i=0;i<N;i++){
@@ -674,9 +742,10 @@ function tick(){
       bl=lerp(cSph[b+2],cOrb[b+2],pOrb);
     }else{
       const blend=Math.max(pSp,pEx*.4);
-      // DNA: bright teal (strand 0) and bright blue (strand 1)
-      const strand=i%2;
-      const dr=strand==0?0:.25, dg=strand==0?.90:.55, db=strand==0?.65:1.0;
+      let dr,dg,db;
+      if(i<DNA_NA){                 dr=0;   dg=.95; db=.60;} // Strand A: teal
+      else if(i<DNA_NA+DNA_NB){     dr=.18; dg=.50; db=1.0;} // Strand B: blue
+      else{                         dr=.55; dg=.82; db=.95;} // Rungs: light cyan-white
       r =lerp(dr,cSph[b],  blend);
       g =lerp(dg,cSph[b+1],blend);
       bl=lerp(db,cSph[b+2],blend);
