@@ -930,19 +930,27 @@ function getS(){
   return tot>0?clamp((scrollY-h1)/tot,0,1):0;
 }
 
-/* Dissolve section 2 text into particles — throttled, only update on real change */
+/* Dissolve section 2 text — only apply inline styles once dissolve actually starts.
+   Before s=0.12 the .rv transition handles visibility; clearing inline styles lets it play. */
 const dissEls=document.querySelectorAll('#s2 .diss');
 let _dissT=-1;
 function syncDiss(s){
   const t=clamp((s-.12)/.30,0,1);
-  if(Math.abs(t-_dissT)<.004) return; // skip if value barely changed
+  if(Math.abs(t-_dissT)<.004) return;
   _dissT=t;
-  const op=1-t, bl=t*12, ty=t*-14, pe=t>.98?'none':'';
   dissEls.forEach(e=>{
-    e.style.opacity=op;
-    e.style.filter=`blur(${bl}px)`;
-    e.style.transform=`translateY(${ty}px)`;
-    e.style.pointerEvents=pe;
+    if(t<=0){
+      // Before dissolve window — let .rv CSS transition do its job
+      e.style.opacity='';
+      e.style.filter='';
+      e.style.transform='';
+      e.style.pointerEvents='';
+    } else {
+      e.style.opacity=1-t;
+      e.style.filter=`blur(${t*12}px)`;
+      e.style.transform=`translateY(${t*-14}px)`;
+      e.style.pointerEvents=t>.98?'none':'';
+    }
   });
 }
 
