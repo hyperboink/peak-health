@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Get Peak Health — Add Better Years to Your Life</title>
+<title>Peak Health | Personalized Longevity, Hormone &amp; Metabolic Care</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -86,9 +86,11 @@ body{
   background:rgba(0,200,150,.12);
   border:1px solid rgba(0,200,150,.38);
   color:var(--teal);
-  padding:6px 18px;border-radius:100px;
+  padding:6px 16px;border-radius:100px;
   font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:7px;
 }
+.badge svg{flex-shrink:0}
 .hero-title{
   font-size:clamp(44px,8vw,92px);
   font-weight:900;line-height:1.04;letter-spacing:-.035em;
@@ -313,7 +315,8 @@ body{
 }
 
 .pillar-text{flex:1;min-width:0}
-.pillar-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
+.pillar-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.pillar-title svg{flex-shrink:0;opacity:.90}
 .pillar-detail{font-size:12.5px;color:var(--muted);line-height:1.55}
 
 /* Stat highlights */
@@ -468,8 +471,14 @@ footer{
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="badge-row">
-      <span class="badge rv in">Elite Longevity Doctors</span>
-      <span class="badge rv in d1">Advanced Testing &amp; Diagnostics</span>
+      <span class="badge rv in">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Elite Longevity Doctors
+      </span>
+      <span class="badge rv in d1">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/><circle cx="12" cy="12" r="2"/></svg>
+        Advanced Testing &amp; Diagnostics
+      </span>
     </div>
     <h1 class="hero-title rv in d2">
       Add <span class="grad">Better Years</span><br>to Your Life
@@ -540,21 +549,27 @@ footer{
         <div class="pillar s3-pillar">
           <img class="pillar-img" src="images/img1.webp" alt="Advanced Testing">
           <div class="pillar-text">
-            <div class="pillar-title">Advanced Testing &amp; Diagnostics</div>
+            <div class="pillar-title">
+              Advanced Testing &amp; Diagnostics
+            </div>
             <div class="pillar-detail"><span class="pillar-stat">350+</span> biomarkers · <span class="pillar-stat">200+</span> labs · <span class="pillar-stat">2×</span> a year<br>Body scans and performance testing</div>
           </div>
         </div>
         <div class="pillar s3-pillar">
           <img class="pillar-img" src="images/img2.avif" alt="Elite Longevity Doctors">
           <div class="pillar-text">
-            <div class="pillar-title">Access to Elite Longevity Doctors</div>
+            <div class="pillar-title">
+              Access to Elite Longevity Doctors
+            </div>
             <div class="pillar-detail">Trained in precision longevity care<br>Delivered through telemedicine</div>
           </div>
         </div>
         <div class="pillar s3-pillar">
           <img class="pillar-img" src="images/img3.avif" alt="Personalized Longevity Plan">
           <div class="pillar-text">
-            <div class="pillar-title">A Personalized Longevity Plan</div>
+            <div class="pillar-title">
+              A Personalized Longevity Plan
+            </div>
             <div class="pillar-detail">Prescriptions · Peptides · Hormones · GLP-1s<br>Supplements, nutrition, and fitness plans</div>
           </div>
         </div>
