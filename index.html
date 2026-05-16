@@ -150,8 +150,8 @@ body{
 /* Glassmorphism content panel — text readable over 3D */
 .glass-panel{
   background:var(--glass);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
   border:1px solid var(--border);
   border-radius:24px;
   padding:44px 40px;
@@ -208,42 +208,121 @@ body{
 }
 
 /* dissolve driven by JS inline styles — no class toggle needed */
-.diss{will-change:opacity,filter,transform}
+.diss{}
+
 
 /* ════════════════════════════════
    SECTION 3 — LONGEVITY SYSTEM
 ════════════════════════════════ */
 #s3{min-height:240vh}
 
+/* ── S3 animations ── */
+@keyframes shimmer-border{
+  0%  {background-position:200% center}
+  100%{background-position:-200% center}
+}
+@keyframes accent-grow{
+  from{transform:scaleY(0);opacity:0}
+  to  {transform:scaleY(1);opacity:1}
+}
+@keyframes pillar-in{
+  from{opacity:0;transform:translateX(40px)}
+  to  {opacity:1;transform:translateX(0)}
+}
+@keyframes img-reveal{
+  from{clip-path:inset(0 100% 0 0);opacity:0}
+  to  {clip-path:inset(0 0% 0 0);opacity:1}
+}
+
 .s3-wrap{
   padding:36px 36px 40px;
   max-width:480px;
   margin-left:auto;
   margin-right:5vw;
+  position:relative;
 }
+/* Shimmer border on glass panel when in view */
+.s3-wrap.glass-panel{
+  border:1px solid var(--border);
+  transition:box-shadow .6s ease;
+}
+.s3-wrap.glass-panel.s3-lit{
+  box-shadow:0 0 0 1px rgba(0,200,150,.25),
+             0 8px 60px rgba(0,200,150,.12),
+             0 0 120px rgba(74,139,255,.08);
+}
+
 .pillar-list{display:flex;flex-direction:column;gap:14px;margin-top:26px}
+
 .pillar{
   display:flex;align-items:center;gap:18px;
-  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
   border-radius:16px;padding:14px 16px;
-  transition:border-color .3s,background .3s,transform .3s;
+  transition:border-color .3s,background .3s,transform .3s,box-shadow .3s;
   overflow:hidden;
+  position:relative;
+  /* hidden until JS triggers */
+  opacity:0;transform:translateX(40px);
 }
+.pillar.p-in{
+  animation:pillar-in .65s cubic-bezier(.22,1,.36,1) forwards;
+}
+.pillar.p-in:nth-child(1){animation-delay:.05s}
+.pillar.p-in:nth-child(2){animation-delay:.20s}
+.pillar.p-in:nth-child(3){animation-delay:.35s}
+
+/* Left accent bar */
+.pillar::before{
+  content:'';
+  position:absolute;left:0;top:12%;bottom:12%;width:3px;
+  background:linear-gradient(180deg,var(--teal),var(--blue));
+  border-radius:0 3px 3px 0;
+  transform:scaleY(0);transform-origin:top;opacity:0;
+  transition:transform .5s ease, opacity .4s ease;
+}
+.pillar.p-in::before{
+  transform:scaleY(1);opacity:1;
+  transition-delay:.5s;
+  display: none;
+}
+
 .pillar:hover{
   background:rgba(255,255,255,.09);
   border-color:rgba(0,200,150,.32);
   transform:translateX(-4px);
+  box-shadow:0 4px 24px rgba(0,200,150,.10);
 }
+/* Don't fight the hover while still animating */
+.pillar:not(.p-in):hover{transform:none}
+
 .pillar-img{
   flex:0 0 80px;height:72px;
   border-radius:10px;
   object-fit:cover;
   border:1px solid rgba(255,255,255,.10);
   filter:brightness(.92) saturate(1.1);
+  clip-path:inset(0 100% 0 0);
+  transition:clip-path .6s cubic-bezier(.22,1,.36,1), opacity .4s ease;
+  opacity:0;
 }
+.pillar.p-in .pillar-img{
+  clip-path:inset(0 0% 0 0);
+  opacity:1;
+  transition-delay:.25s;
+}
+
 .pillar-text{flex:1;min-width:0}
 .pillar-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
 .pillar-detail{font-size:12.5px;color:var(--muted);line-height:1.55}
+
+/* Stat highlights */
+.pillar-stat{
+  display:inline-block;
+  font-weight:800;font-size:13.5px;
+  color:var(--teal);
+  letter-spacing:-.01em;
+}
 
 /* ════════════════════════════════
    SECTION 4 — ELITE DOCTORS
@@ -306,7 +385,7 @@ body{
 .doc-card{
   flex:0 0 calc((100% - 48px)/3);
   background:rgba(6,10,24,0.72);
-  backdrop-filter:blur(18px);
+  backdrop-filter:blur(8px);
   border:1px solid var(--border);
   border-radius:20px;
   padding:28px 24px 24px;
@@ -458,25 +537,25 @@ footer{
         The Peak Health<br><span class="grad">Longevity System</span>
       </h2>
       <div class="pillar-list">
-        <div class="pillar rv d2">
+        <div class="pillar s3-pillar">
           <img class="pillar-img" src="images/img1.webp" alt="Advanced Testing">
           <div class="pillar-text">
             <div class="pillar-title">Advanced Testing &amp; Diagnostics</div>
-            <div class="pillar-detail">350+ biomarkers · 200+ labs · 2× a year<br>Body scans and performance testing</div>
+            <div class="pillar-detail"><span class="pillar-stat">350+</span> biomarkers · <span class="pillar-stat">200+</span> labs · <span class="pillar-stat">2×</span> a year<br>Body scans and performance testing</div>
           </div>
         </div>
-        <div class="pillar rv d3">
+        <div class="pillar s3-pillar">
           <img class="pillar-img" src="images/img2.avif" alt="Elite Longevity Doctors">
           <div class="pillar-text">
             <div class="pillar-title">Access to Elite Longevity Doctors</div>
             <div class="pillar-detail">Trained in precision longevity care<br>Delivered through telemedicine</div>
           </div>
         </div>
-        <div class="pillar rv d4">
+        <div class="pillar s3-pillar">
           <img class="pillar-img" src="images/img3.avif" alt="Personalized Longevity Plan">
           <div class="pillar-text">
             <div class="pillar-title">A Personalized Longevity Plan</div>
-            <div class="pillar-detail">Prescriptions: Peptides, Hormones, GLP-1s<br>Supplements, nutrition, and fitness plans</div>
+            <div class="pillar-detail">Prescriptions · Peptides · Hormones · GLP-1s<br>Supplements, nutrition, and fitness plans</div>
           </div>
         </div>
       </div>
@@ -624,7 +703,7 @@ function eio(t){return t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1}
 /* ─── Renderer ─── */
 const cvs      = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 renderer.setSize(innerWidth,innerHeight);
 renderer.setClearColor(0x000000,0); // fully transparent clear
 
@@ -851,15 +930,14 @@ function getS(){
   return tot>0?clamp((scrollY-h1)/tot,0,1):0;
 }
 
-/* Dissolve section 2 text into particles */
+/* Dissolve section 2 text into particles — throttled, only update on real change */
 const dissEls=document.querySelectorAll('#s2 .diss');
+let _dissT=-1;
 function syncDiss(s){
-  // dissolve window: s 0.12 → 0.42 (scroll-driven, not class-toggled)
   const t=clamp((s-.12)/.30,0,1);
-  const op=1-t;
-  const bl=t*12;          // blur up to 12px
-  const ty=t*-14;         // drift up 14px
-  const pe=t>.98?'none':''; // disable pointer events when fully gone
+  if(Math.abs(t-_dissT)<.004) return; // skip if value barely changed
+  _dissT=t;
+  const op=1-t, bl=t*12, ty=t*-14, pe=t>.98?'none':'';
   dissEls.forEach(e=>{
     e.style.opacity=op;
     e.style.filter=`blur(${bl}px)`;
@@ -870,9 +948,18 @@ function syncDiss(s){
 
 const oLive=new Float32Array(3);
 
+/* Pause loop when tab hidden */
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden) tick();
+});
+
+let _frame=0;
+
 /* ─── Tick ─── */
 function tick(){
+  if(document.hidden) return;
   requestAnimationFrame(tick);
+  _frame++;
   T+=.016;
   sSm=lerp(sSm,sRaw,.075);
   const s=sSm;
@@ -895,7 +982,8 @@ function tick(){
   /* Live-spin the DNA — strands + rung particles + rung lines */
   const spin=T*.32;
   rungLines.visible=pEx<.90;
-  if(pEx<.99){
+  // DNA trig is expensive — recalculate only on even frames
+  if(pEx<.99 && _frame%2===0){
     // Strand A
     for(let i=0;i<DNA_NA;i++){
       const a=dnaT[i]+spin;
@@ -925,14 +1013,19 @@ function tick(){
     rungMat.opacity=.38*(1-pEx*1.2); // fade out during explosion
   }
 
+  // Skip particle update on odd frames when fully in neural phase (slow movement, imperceptible)
+  const skipFrame = _frame%2===1 && pNeu>.99;
+  if(!skipFrame)
   for(let i=0;i<N;i++){
     const b=i*3;
     if(pOrb>0||pNeu>0)capPos(i,orbT,oLive,0);
 
+    // Cache neural sin value once — used for both position and color
+    const fi=pNeu>0?(Math.sin(T*nFreq[i]+nPh[i])+1)*.5:0;
+
     /* Position */
     let x,y,z;
     if(pNeu>0){
-      const fi=(Math.sin(T*nFreq[i]+nPh[i])+1)*.5;
       const dp=nAmp[i]*fi;
       const tx=posF[b]  +nDir[b]  *dp,ty=posF[b+1]+nDir[b+1]*dp,tz=posF[b+2]+nDir[b+2]*dp;
       const fx=pOrb>.999?oLive[0]:lerp(posC[b],  oLive[0],pOrb);
@@ -959,7 +1052,6 @@ function tick(){
     /* Color */
     let r,g,bl;
     if(pNeu>0){
-      const fi=(Math.sin(T*nFreq[i]+nPh[i])+1)*.5;
       const f2=fi*fi;
       const nr=.05+f2*.60,ng=.18+f2*.68,nb=.82+f2*.18;
       const fr=pOrb>.999?cCap[b]  :lerp(cSph[b],  cCap[b],  pOrb);
@@ -992,8 +1084,10 @@ function tick(){
     }
     lGeo.attributes.position.needsUpdate=true;
   }
-  geo.attributes.position.needsUpdate=true;
-  geo.attributes.color.needsUpdate=true;
+  if(!skipFrame){
+    geo.attributes.position.needsUpdate=true;
+    geo.attributes.color.needsUpdate=true;
+  }
 
   /* Shift particles right during section 2 (left=content, right=3D) */
   const tgtX=lerp(4.2,0,eio(ci01(0,.30,s)));
@@ -1025,6 +1119,22 @@ const io=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
 },{threshold:.10});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ── S3 pillar animations ── */
+const s3Wrap   = document.querySelector('#s3 .s3-wrap');
+const s3Pillars= document.querySelectorAll('#s3 .s3-pillar');
+
+const s3Io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      // Light up the glass panel border
+      s3Wrap.classList.add('s3-lit');
+      // Stagger pillars in
+      s3Pillars.forEach(p=>p.classList.add('p-in'));
+    }
+  });
+},{threshold:.25});
+if(s3Wrap) s3Io.observe(s3Wrap);
 
 tick();
 })();
