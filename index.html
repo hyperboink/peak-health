@@ -4,9 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Peak Health | Personalized Longevity, Hormone &amp; Metabolic Care</title>
+<!-- Preconnect to font origins — eliminates DNS+TLS round-trips before font CSS loads -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Non-render-blocking font load: starts as print (skipped by render), swaps to all when loaded -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"></noscript>
 <style>
+/* Size-adjusted fallback — prevents CLS when Inter swaps in */
+@font-face{
+  font-family:'Inter-fallback';
+  src:local('Arial');
+  size-adjust:107%;
+  ascent-override:90%;
+  descent-override:22%;
+  line-gap-override:0%;
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 :root{
@@ -27,7 +41,7 @@ html, body {
 body{
   background:var(--bg);
   color:var(--text);
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family:'Inter','Inter-fallback',-apple-system,BlinkMacSystemFont,sans-serif;
   overflow-x:hidden;
 }
 
@@ -465,7 +479,7 @@ footer{
 
 <!-- ══════════ S1: VIDEO HERO (z-index:2, covers canvas) ══════════ -->
 <section id="s1">
-  <video id="hero-video" autoplay muted loop playsinline>
+  <video id="hero-video" autoplay muted loop playsinline preload="none">
     <source src="videos/getpeakvideo.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
@@ -480,7 +494,7 @@ footer{
         Advanced Testing &amp; Diagnostics
       </span>
     </div>
-    <h1 class="hero-title rv in d2">
+    <h1 class="hero-title rv in d2" fetchpriority="high">
       Add <span class="grad">Better Years</span><br>to Your Life
     </h1>
     <p class="hero-sub rv in d3">
@@ -704,8 +718,10 @@ footer{
   <p>© 2025 Get Peak Health · All rights reserved.</p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
+<link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script defer>
+window.addEventListener('DOMContentLoaded',function(){
 (function(){
 'use strict';
 
@@ -1161,6 +1177,7 @@ if(s3Wrap) s3Io.observe(s3Wrap);
 
 tick();
 })();
+});
 </script>
 </body>
 </html>
