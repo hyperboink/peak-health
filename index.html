@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Peak Health | Personalized Longevity, Hormone &amp; Metabolic Care</title>
+<meta name="description" content="Peak Health delivers accessible preventative care with comprehensive diagnostics, personalized hormone support, GLP-1 weight care, and data-driven health plans. Designed for midlife health, performance, and long-term vitality.">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Peak Health | Personalized Longevity, Hormone &amp; Metabolic Care">
+<meta property="og:description" content="Peak Health delivers accessible preventative care with comprehensive diagnostics, personalized hormone support, GLP-1 weight care, and data-driven health plans. Designed for midlife health, performance, and long-term vitality.">
+<meta property="og:image" content="https://framerusercontent.com/assets/scIsMCMmMxihGeFP3vlXJBX2DM.png">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Peak Health | Personalized Longevity, Hormone &amp; Metabolic Care">
+<meta name="twitter:description" content="Peak Health delivers accessible preventative care with comprehensive diagnostics, personalized hormone support, GLP-1 weight care, and data-driven health plans. Designed for midlife health, performance, and long-term vitality.">
+<meta name="twitter:image" content="https://framerusercontent.com/assets/scIsMCMmMxihGeFP3vlXJBX2DM.png">
+
 <!-- Preconnect to font origins — eliminates DNS+TLS round-trips before font CSS loads -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +24,9 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"></noscript>
+
+<link rel="preload" as="video" href="videos/getpeakvideo.mp4" type="video/mp4">
+
 <style>
 /* Size-adjusted fallback — prevents CLS when Inter swaps in */
 @font-face{
@@ -66,6 +82,7 @@ body{
   justify-content:center;
   overflow:hidden;
   z-index:2;
+  background: #060a18;
 }
 #hero-video{
   position:absolute;
@@ -479,7 +496,7 @@ footer{
 
 <!-- ══════════ S1: VIDEO HERO (z-index:2, covers canvas) ══════════ -->
 <section id="s1">
-  <video id="hero-video" autoplay muted loop playsinline preload="none">
+  <video id="hero-video" autoplay muted loop playsinline preload="metadata">
     <source src="videos/getpeakvideo.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
